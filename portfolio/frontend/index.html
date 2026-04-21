@@ -1,0 +1,447 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Adam Grøfte Barfod — Enterprise AI</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+			/* ── Project cards ── */
+			.features .project-card {
+				display: flex;
+				flex-direction: column;
+				gap: 0.6em;
+			}
+			.features .project-card .tags {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.4em;
+				margin-top: 0.2em;
+			}
+			.features .project-card .tag {
+				font-size: 0.65em;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				padding: 0.25em 0.6em;
+				border: 1px solid rgba(255,255,255,0.2);
+				border-radius: 2em;
+				color: rgba(255,255,255,0.5);
+			}
+			.features .project-card .tag.live {
+				border-color: #5e42a6;
+				color: #a98be0;
+			}
+			.features section p {
+				flex: 1;
+			}
+			/* ── Method coverage grid ── */
+			.method-grid {
+				display: grid;
+				grid-template-columns: repeat(3, 1fr);
+				gap: 1.2em;
+				margin-top: 2em;
+			}
+			.method-item {
+				padding: 1.2em;
+				border: 1px solid rgba(255,255,255,0.1);
+				border-radius: 0.25em;
+				background: rgba(255,255,255,0.03);
+			}
+			.method-item h4 {
+				font-size: 0.85em;
+				letter-spacing: 0.05em;
+				margin-bottom: 0.3em;
+				color: #fff;
+			}
+			.method-item p {
+				font-size: 0.75em;
+				color: rgba(255,255,255,0.45);
+				margin: 0;
+			}
+			.method-item .status {
+				font-size: 0.65em;
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				margin-top: 0.5em;
+				display: block;
+			}
+			.method-item .status.done { color: #5e42a6; }
+			.method-item .status.progress { color: #b74e91; }
+			/* ── About photo ── */
+			.about-photo {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				object-position: center top;
+				display: block;
+			}
+			/* ── Project visual panels ── */
+			.proj-visual {
+				width: 100%;
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 2.5em;
+				font-weight: 700;
+				letter-spacing: 0.05em;
+				color: rgba(255,255,255,0.15);
+			}
+			.proj-visual.recon   { background: linear-gradient(135deg, #1a0a3a 0%, #2d1065 100%); }
+			.proj-visual.cv      { background: linear-gradient(135deg, #001a00 0%, #003820 100%); }
+			.proj-visual.pulse   { background: linear-gradient(135deg, #0a1a2e 0%, #0d3060 100%); }
+			.proj-visual.intel   { background: linear-gradient(135deg, #1a0a0a 0%, #3a1020 100%); }
+			.proj-visual.kyb     { background: linear-gradient(135deg, #0a1a0a 0%, #1a3a10 100%); }
+			@media screen and (max-width: 736px) {
+				.method-grid { grid-template-columns: repeat(2, 1fr); }
+			}
+			@media screen and (max-width: 480px) {
+				.method-grid { grid-template-columns: 1fr; }
+			}
+		</style>
+	</head>
+	<body class="is-preload">
+
+		<!-- Sidebar -->
+		<section id="sidebar">
+			<div class="inner">
+				<nav>
+					<ul>
+						<li><a href="#intro">Hello</a></li>
+						<li><a href="#about">About</a></li>
+						<li><a href="#projects">Projects</a></li>
+						<li><a href="#methods">Methods</a></li>
+						<li><a href="#contact">Contact</a></li>
+					</ul>
+				</nav>
+			</div>
+		</section>
+
+		<!-- Wrapper -->
+		<div id="wrapper">
+
+			<!-- INTRO -->
+			<section id="intro" class="wrapper style1 fullscreen fade-up">
+				<div class="inner">
+					<h1>Adam Grøfte Barfod</h1>
+					<p>
+						Process &amp; Innovation Engineer · Enterprise AI Transformation<br />
+						<em style="opacity:0.6; font-style:normal; font-size:0.9em;">
+							I help organisations move from AI experimentation to operational impact.
+						</em>
+					</p>
+					<p style="font-size:0.9em; max-width:38em; opacity:0.7;">
+						My edge is the work that sits between a technology's potential and an organisation's ability to use it —
+						process mapping, validation, stakeholder alignment, and structured rollout.
+						This is where most AI initiatives fail. It is where I perform best.
+					</p>
+					<ul class="actions">
+						<li><a href="#projects" class="button scrolly primary">See my work</a></li>
+						<li><a href="#contact" class="button scrolly">Get in touch</a></li>
+					</ul>
+				</div>
+			</section>
+
+			<!-- ABOUT -->
+			<section id="about" class="wrapper style2 spotlights">
+
+				<section>
+					<a class="image"><img src="adam.png" class="about-photo" alt="Adam Grøfte Barfod" /></a>
+					<div class="content">
+						<div class="inner">
+							<h2>From proof-of-concept to global deployment</h2>
+							<p>
+								At Novo Nordisk, I built and validated the company's first VR training solution in Quality Control —
+								taking it from early prototype to production system deployed across international manufacturing sites
+								in a regulated pharmaceutical environment.
+							</p>
+							<p>
+								That work covered the full technology lifecycle: problem identification, tool evaluation, prototyping,
+								validation against real use cases, vendor management, and adoption across global teams.
+								Most people applying for AI roles can't say they've done this.
+							</p>
+							<ul class="actions">
+								<li><a href="https://www.linkedin.com/in/adambarfod/" target="_blank" class="button">LinkedIn</a></li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<a class="image" style="background: linear-gradient(135deg, #1a0a3a 0%, #0a1a2e 100%); display:flex; align-items:center; justify-content:center;">
+						<span style="font-size:4em; opacity:0.3;">⚡</span>
+					</a>
+					<div class="content">
+						<div class="inner">
+							<h2>Currently building applied AI</h2>
+							<p>
+								As a Solutions Consultant at Aety, I analyse how organisations run their processes,
+								identify where technology creates real value, and translate that into implemented solutions.
+							</p>
+							<p>
+								In parallel, I am building an AI project portfolio — working across direct API integration,
+								workflow automation, agentic frameworks, and multi-model pipelines —
+								targeting roles in AI Transformation, Enterprise AI, and AI Strategy.
+							</p>
+							<ul class="actions">
+								<li><a href="#projects" class="button scrolly">See the work</a></li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+			</section>
+
+			<!-- PROJECTS -->
+			<section id="projects" class="wrapper style3 fade-up">
+				<div class="inner">
+					<h2>Projects</h2>
+					<p>
+						Each project solves a real business problem using a different AI architecture.
+						The goal is breadth across methods, not repetition of one pattern.
+					</p>
+					<div class="features">
+
+						<section>
+							<span class="icon solid major fa-search"></span>
+							<div class="project-card">
+								<h3>RECON — Sales Meeting Prep</h3>
+								<p>
+									Type a company name. Four AI agents research it in sequence and produce a
+									structured 9-slide briefing deck in ~90 seconds. Replaces 2.5 hours of manual
+									pre-meeting research.
+								</p>
+								<div class="tags">
+									<span class="tag">CrewAI</span>
+									<span class="tag">Claude</span>
+									<span class="tag">Tavily</span>
+									<span class="tag">FastAPI</span>
+									<span class="tag live">Agentic pipeline</span>
+								</div>
+								<ul class="actions" style="margin-top:1em">
+									<li><a href="/recon" class="button small">Launch →</a></li>
+								</ul>
+							</div>
+						</section>
+
+						<section>
+							<span class="icon solid major fa-robot"></span>
+							<div class="project-card">
+								<h3>CV Agent — AI Representative</h3>
+								<p>
+									An AI that represents me in conversations with recruiters and hiring managers.
+									Ask about my background, or paste a job description for an honest fit analysis
+									with specific evidence.
+								</p>
+								<div class="tags">
+									<span class="tag">Claude</span>
+									<span class="tag">FastAPI</span>
+									<span class="tag">Streaming</span>
+									<span class="tag live">Context-window AI</span>
+								</div>
+								<ul class="actions" style="margin-top:1em">
+									<li><a href="/cv" class="button small">Launch →</a></li>
+								</ul>
+							</div>
+						</section>
+
+						<section>
+							<span class="icon solid major fa-newspaper"></span>
+							<div class="project-card">
+								<h3>AI Pulse — Enterprise News Digest</h3>
+								<p>
+									Multi-agent pipeline that monitors AI news sources, curates relevant content,
+									and generates structured briefings. Demonstrates parallel async agent
+									coordination and structured output.
+								</p>
+								<div class="tags">
+									<span class="tag">Claude</span>
+									<span class="tag">FastAPI</span>
+									<span class="tag">Multi-agent</span>
+									<span class="tag live">Async pipeline</span>
+								</div>
+								<ul class="actions" style="margin-top:1em">
+									<li><a href="/ai-pulse" class="button small">Launch →</a></li>
+								</ul>
+							</div>
+						</section>
+
+						<section>
+							<span class="icon solid major fa-file-contract"></span>
+							<div class="project-card">
+								<h3>Contract Intelligence</h3>
+								<p>
+									Upload a contract. The system extracts key clauses, identifies risk areas,
+									and produces a scored risk assessment. Built for legal and procurement
+									teams doing due diligence at volume.
+								</p>
+								<div class="tags">
+									<span class="tag">Claude</span>
+									<span class="tag">FastAPI</span>
+									<span class="tag">PDF parsing</span>
+									<span class="tag live">Document AI</span>
+								</div>
+								<ul class="actions" style="margin-top:1em">
+									<li><a href="/contract-intel" class="button small">Launch →</a></li>
+								</ul>
+							</div>
+						</section>
+
+						<section>
+							<span class="icon solid major fa-shield-alt"></span>
+							<div class="project-card">
+								<h3>KYB Document Processor</h3>
+								<p>
+									AI-powered processor for merchant business registration documents.
+									Extracts ownership structure, identifies UBO at 25% threshold, and
+									generates EU 6AMLD compliance checklists. Tested on real Danish CVR documents.
+								</p>
+								<div class="tags">
+									<span class="tag">GPT</span>
+									<span class="tag">n8n</span>
+									<span class="tag">Workflow automation</span>
+									<span class="tag live">Live demo</span>
+								</div>
+								<ul class="actions" style="margin-top:1em">
+									<li><a href="https://adam0406-svg.github.io/flatpay-kyb-demo" target="_blank" class="button small">Launch →</a></li>
+								</ul>
+							</div>
+						</section>
+
+						<section>
+							<span class="icon solid major fa-layer-group"></span>
+							<div class="project-card">
+								<h3>Multi-Document RAG Chat</h3>
+								<p>
+									Upload multiple documents — contracts, policies, reports. Ask questions
+									across the entire corpus with source citations. The most deployed
+									AI pattern in enterprise. Coming next.
+								</p>
+								<div class="tags">
+									<span class="tag">LlamaIndex</span>
+									<span class="tag">ChromaDB</span>
+									<span class="tag">Claude</span>
+									<span class="tag" style="border-color:#b74e91; color:#b74e91;">In development</span>
+								</div>
+							</div>
+						</section>
+
+					</div>
+				</div>
+			</section>
+
+			<!-- METHODS -->
+			<section id="methods" class="wrapper style2 fade-up">
+				<div class="inner">
+					<h2>Method coverage</h2>
+					<p>
+						Enterprise AI roles require breadth across architectures, not just one pattern repeated.
+						This is the coverage I am building — deliberately, not by accident.
+					</p>
+					<div class="method-grid">
+						<div class="method-item">
+							<h4>Direct API integration</h4>
+							<p>Anthropic API, structured output, streaming, multi-agent orchestration</p>
+							<span class="status done">✓ Demonstrated</span>
+						</div>
+						<div class="method-item">
+							<h4>Workflow automation</h4>
+							<p>n8n, event-driven AI pipelines, connecting services visually</p>
+							<span class="status done">✓ Demonstrated</span>
+						</div>
+						<div class="method-item">
+							<h4>AI frameworks</h4>
+							<p>CrewAI, multi-agent coordination, agent roles and task sequencing</p>
+							<span class="status done">✓ Demonstrated</span>
+						</div>
+						<div class="method-item">
+							<h4>Agentic tool use</h4>
+							<p>Model decides its own research steps — plan, act, observe, repeat</p>
+							<span class="status done">✓ Demonstrated</span>
+						</div>
+						<div class="method-item">
+							<h4>RAG + vector database</h4>
+							<p>Embeddings, semantic search, multi-document retrieval with citations</p>
+							<span class="status progress">⟳ In development</span>
+						</div>
+						<div class="method-item">
+							<h4>Deployed &amp; public</h4>
+							<p>Live URLs, production hosting, accessible without setup</p>
+							<span class="status progress">⟳ In progress</span>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<!-- CONTACT -->
+			<section id="contact" class="wrapper style1 fade-up">
+				<div class="inner">
+					<h2>Get in touch</h2>
+					<p>
+						I am open to conversations about AI Transformation, Enterprise AI, and related roles.
+						If you want to discuss a project, an opportunity, or just AI in general — reach out.
+					</p>
+					<div class="split style1">
+						<section>
+							<h3>What I am looking for</h3>
+							<p>
+								A role where AI is central to how the business operates — not a side initiative.
+								I want to own the process end to end: understand the manual work, determine where
+								AI adds value, build and test the solution, and scale it.
+							</p>
+							<p>
+								Target roles: <strong>AI Transformation Lead · AI Specialist · Enterprise AI Consultant ·
+								AI Adoption &amp; Enablement · AI Product Manager</strong>
+							</p>
+						</section>
+						<section>
+							<ul class="contact">
+								<li>
+									<h3>Location</h3>
+									<span>Copenhagen, Denmark</span>
+								</li>
+								<li>
+									<h3>Email</h3>
+									<a href="mailto:Adam0406@gmail.com">Adam0406@gmail.com</a>
+								</li>
+								<li>
+									<h3>Phone</h3>
+									<span>+45 41 62 45 30</span>
+								</li>
+								<li>
+									<h3>Social</h3>
+									<ul class="icons">
+										<li><a href="https://www.linkedin.com/in/adambarfod/" target="_blank" class="icon brands fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+										<li><a href="https://adam0406-svg.github.io/flatpay-kyb-demo" target="_blank" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+									</ul>
+								</li>
+							</ul>
+						</section>
+					</div>
+				</div>
+			</section>
+
+		</div>
+
+		<!-- Footer -->
+		<footer id="footer" class="wrapper style1-alt">
+			<div class="inner">
+				<ul class="menu">
+					<li>&copy; Adam Grøfte Barfod. All rights reserved.</li>
+					<li>Copenhagen, Denmark · <a href="mailto:Adam0406@gmail.com">Adam0406@gmail.com</a></li>
+				</ul>
+			</div>
+		</footer>
+
+		<!-- Scripts -->
+		<script src="assets/js/jquery.min.js"></script>
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<script src="assets/js/browser.min.js"></script>
+		<script src="assets/js/breakpoints.min.js"></script>
+		<script src="assets/js/util.js"></script>
+		<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

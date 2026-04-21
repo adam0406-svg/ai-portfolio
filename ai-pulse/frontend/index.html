@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Pulse — Daily Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:           #080a12;
+  --surface:      #0d1020;
+  --border:       rgba(255,255,255,0.07);
+  --border-soft:  rgba(255,255,255,0.04);
+  --text-1:       #edf0f9;
+  --text-2:       #8a94a8;
+  --text-3:       #404b5e;
+  --accent:       #7c6ff5;
+  --accent-light: #a78bfa;
+  --accent-soft:  rgba(124, 111, 245, 0.12);
+  --green:        #2ed4a2;
+  --green-soft:   rgba(46, 212, 162, 0.10);
+  --orange:       #fb923c;
+  --orange-soft:  rgba(251, 146, 60, 0.10);
+  --header-h:     70px;
+  --sidebar-w:    410px;
+}
+
+html {
+  zoom: 0.9;
+}
+
+html, body {
+  height: 100%; width: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: 'Space Grotesk', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ═══════════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════════ */
+header {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  z-index: 400;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: 0 32px 0 28px;
+  gap: 24px;
+  background: rgba(8, 10, 18, 0.72);
+  backdrop-filter: blur(32px) saturate(160%);
+  -webkit-backdrop-filter: blur(32px) saturate(160%);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  display: flex; align-items: center; gap: 12px; flex: 0 0 auto;
+}
+
+.pulse-rig {
+  position: relative; width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center; flex: 0 0 auto;
+}
+.pulse-rig::before, .pulse-rig::after {
+  content: ''; position: absolute; border-radius: 50%;
+  border: 1.5px solid var(--green);
+  animation: ring 2.4s ease-out infinite;
+}
+.pulse-rig::after { animation-delay: 0.8s; }
+.pulse-core {
+  width: 9px; height: 9px; background: var(--green);
+  border-radius: 50%; box-shadow: 0 0 10px rgba(46,212,162,0.6); z-index: 1;
+}
+@keyframes ring {
+  0%   { width: 9px;  height: 9px;  opacity: 0.8; }
+  100% { width: 32px; height: 32px; opacity: 0;   }
+}
+
+.logo-text { display: flex; flex-direction: column; gap: 1px; }
+.logo-name {
+  font-size: 15px; font-weight: 700;
+  letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-1); line-height: 1;
+}
+.logo-tagline {
+  font-size: 9.5px; font-weight: 400;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3);
+}
+.header-sep { width: 1px; height: 26px; background: var(--border); flex: 0 0 auto; }
+
+.article-nav {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+}
+.nav-pip {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--text-3); border: none; padding: 0; cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.nav-pip.active {
+  background: var(--accent-light); transform: scale(1.55);
+  box-shadow: 0 0 8px rgba(167,139,250,0.45);
+}
+.nav-pip:hover:not(.active) { background: var(--text-2); transform: scale(1.25); }
+.nav-counter {
+  font-size: 11.5px; font-weight: 500; color: var(--text-3);
+  letter-spacing: 0.07em; margin-left: 10px; white-space: nowrap;
+}
+
+.header-right { display: flex; align-items: center; gap: 14px; flex: 0 0 auto; }
+.h-date { font-size: 12px; color: var(--text-3); letter-spacing: 0.03em; }
+.live-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--green-soft); border: 1px solid rgba(46,212,162,0.18);
+  border-radius: 100px; padding: 4px 11px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.10em;
+  text-transform: uppercase; color: var(--green);
+}
+.live-blink {
+  width: 5px; height: 5px; background: var(--green);
+  border-radius: 50%; animation: blink 1.5s ease-in-out infinite;
+}
+@keyframes blink { 50% { opacity: 0.2; } }
+
+.btn-refresh {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 16px; background: transparent;
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-2); font-size: 13px; font-weight: 500;
+  font-family: inherit; cursor: pointer; letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+}
+.btn-refresh:hover { border-color: rgba(124,111,245,0.38); color: var(--accent-light); background: var(--accent-soft); }
+.btn-refresh:disabled { opacity: 0.45; cursor: not-allowed; }
+.refresh-ic { display: inline-block; }
+.btn-refresh.spinning .refresh-ic { animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════
+   PANELS
+═══════════════════════════════════════════════════════ */
+.left-panel {
+  position: fixed; top: var(--header-h); left: 0;
+  right: var(--sidebar-w); bottom: 0;
+  overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none;
+}
+.left-panel::-webkit-scrollbar { display: none; }
+
+.right-panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: var(--sidebar-w); background: var(--surface);
+  border-left: 1px solid var(--border);
+  display: flex; flex-direction: column; padding-top: var(--header-h);
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOADING
+═══════════════════════════════════════════════════════ */
+.loading-view {
+  height: calc(100vh - var(--header-h));
+  scroll-snap-align: start;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 32px;
+}
+.ring-loader {
+  width: 48px; height: 48px;
+  border: 2px solid rgba(124,111,245,0.14); border-top: 2px solid var(--accent);
+  border-radius: 50%; animation: spin 0.9s linear infinite;
+}
+.loading-headline { font-size: 18px; color: var(--text-2); font-weight: 400; letter-spacing: 0.02em; }
+.pipeline { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.pipe-step {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12.5px; color: var(--text-3);
+  opacity: 0; letter-spacing: 0.04em;
+  animation: fadeUp 0.4s forwards;
+}
+.pipe-step:nth-child(1) { animation-delay: 0.5s; }
+.pipe-step:nth-child(2) { animation-delay: 1.6s; }
+.pipe-step:nth-child(3) { animation-delay: 3.2s; }
+.pipe-dot {
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+  animation: pdot 1.2s ease-in-out infinite;
+}
+@keyframes pdot { 50% { opacity: 0.3; transform: scale(0.6); } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ═══════════════════════════════════════════════════════
+   INTRO SECTION
+═══════════════════════════════════════════════════════ */
+.intro-section {
+  height: calc(100vh - var(--header-h));
+  scroll-snap-align: start;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 64px 80px;
+  border-bottom: 1px solid var(--border-soft); position: relative;
+}
+.intro-eyebrow {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--text-3);
+  margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+}
+.intro-eyebrow::after { content: ''; width: 36px; height: 1px; background: var(--border); }
+.intro-date-big {
+  font-size: clamp(2.4rem, 4vw, 3.8rem); font-weight: 700;
+  line-height: 1.1; letter-spacing: -0.035em; color: var(--text-1); margin-bottom: 28px;
+}
+.intro-text {
+  font-size: 1.15rem; line-height: 1.82; color: #a8b4c4; font-weight: 400;
+  max-width: 640px; margin-bottom: 44px;
+}
+.intro-stats-row { display: flex; align-items: center; gap: 32px; }
+.intro-stat-item { display: flex; flex-direction: column; gap: 3px; }
+.stat-number { font-size: 2rem; font-weight: 700; color: var(--text-1); letter-spacing: -0.02em; line-height: 1; }
+.stat-label { font-size: 11px; color: var(--text-3); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 400; }
+.intro-stat-div { width: 1px; height: 40px; background: var(--border); }
+.begin-hint {
+  position: absolute; bottom: 28px; left: 80px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 10.5px; color: var(--text-3); letter-spacing: 0.07em; text-transform: uppercase;
+  opacity: 0; animation: fadeUp 0.5s 2s forwards; pointer-events: none;
+}
+.down-arrow { animation: bounce 1.6s ease-in-out infinite; }
+@keyframes bounce { 50% { transform: translateY(4px); } }
+
+/* ═══════════════════════════════════════════════════════
+   ARTICLE SECTIONS
+═══════════════════════════════════════════════════════ */
+.article-section {
+  height: calc(100vh - var(--header-h));
+  scroll-snap-align: start;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 60px 80px;
+  border-bottom: 1px solid var(--border-soft); position: relative;
+}
+.article-section.is-lead {
+  background: linear-gradient(180deg, rgba(124,111,245,0.04) 0%, transparent 60%);
+}
+
+.art-meta {
+  display: flex; align-items: center; gap: 9px; margin-bottom: 22px; flex-wrap: wrap;
+}
+.badge {
+  display: inline-flex; align-items: center; padding: 4px 13px; border-radius: 100px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.04em; white-space: nowrap;
+}
+.badge-source  { background: var(--accent-soft); border: 1px solid rgba(124,111,245,0.22); color: var(--accent-light); }
+.badge-cat     { background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text-2); }
+.badge-lead    { background: rgba(46,212,162,0.08); border: 1px solid rgba(46,212,162,0.22); color: var(--green); }
+.badge-score   { background: rgba(46,212,162,0.08); border: 1px solid rgba(46,212,162,0.18); color: var(--green); }
+.art-index     { margin-left: auto; font-size: 11px; font-weight: 500; color: var(--text-3); letter-spacing: 0.09em; }
+
+.art-headline {
+  font-size: clamp(1.8rem, 2.9vw, 2.65rem); font-weight: 700;
+  line-height: 1.18; letter-spacing: -0.025em; color: var(--text-1);
+  margin-bottom: 20px; max-width: 740px;
+}
+
+.signal-bar {
+  font-size: 13px; color: var(--text-3); font-style: italic; line-height: 1.55;
+  padding: 11px 16px;
+  border-left: 2px solid rgba(124,111,245,0.35); background: rgba(124,111,245,0.04);
+  border-radius: 0 9px 9px 0; margin-bottom: 28px; max-width: 640px;
+}
+
+.art-briefing {
+  font-size: 1.1rem; line-height: 1.87; color: #adb8c8; font-weight: 400;
+  max-width: 700px; margin-bottom: 40px;
+}
+
+.art-footer { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.art-stat { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-3); }
+.art-stat svg { opacity: 0.45; flex: 0 0 auto; }
+
+.read-btn {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 12px 24px; background: var(--accent-soft);
+  border: 1px solid rgba(124,111,245,0.22); border-radius: 10px;
+  color: var(--accent-light); font-size: 13.5px; font-weight: 500;
+  font-family: inherit; text-decoration: none; letter-spacing: 0.02em;
+  transition: all 0.22s ease;
+}
+.read-btn:hover {
+  background: rgba(124,111,245,0.22); border-color: rgba(167,139,250,0.4);
+  color: #c4b5fd; gap: 13px;
+}
+
+.scroll-cue {
+  position: absolute; bottom: 26px; left: 80px;
+  display: flex; align-items: center; gap: 7px;
+  font-size: 10.5px; color: var(--text-3); letter-spacing: 0.07em; text-transform: uppercase;
+  opacity: 0; pointer-events: none; animation: fadeUp 0.5s 2s forwards;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FLASHCARD PANEL
+═══════════════════════════════════════════════════════ */
+.fc-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  padding: 28px 26px 22px; min-height: 0; overflow: hidden;
+}
+.fc-section-label {
+  font-size: 9.5px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-3); margin-bottom: 18px;
+  display: flex; align-items: center; gap: 9px; flex: 0 0 auto;
+}
+.fc-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.fc-card {
+  flex: 1; min-height: 0;
+  background: linear-gradient(148deg, rgba(124,111,245,0.08) 0%, rgba(8,10,18,0) 60%);
+  border: 1px solid rgba(124,111,245,0.13); border-radius: 20px; padding: 26px;
+  display: flex; flex-direction: column; overflow: hidden; position: relative;
+}
+.fc-card::before {
+  content: ''; position: absolute; top: 0; right: 0; width: 140px; height: 140px;
+  background: radial-gradient(circle at top right, rgba(124,111,245,0.10) 0%, transparent 70%);
+  border-radius: 0 20px 0 0; pointer-events: none;
+}
+
+.fc-diff {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 100px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+  flex: 0 0 auto; align-self: flex-start; margin-bottom: 14px;
+}
+.fc-diff.Beginner     { background: var(--green-soft);  color: var(--green);        border: 1px solid rgba(46,212,162,0.2); }
+.fc-diff.Intermediate { background: var(--orange-soft); color: var(--orange);       border: 1px solid rgba(251,146,60,0.2); }
+.fc-diff.Advanced     { background: var(--accent-soft); color: var(--accent-light); border: 1px solid rgba(124,111,245,0.2); }
+
+.fc-term {
+  font-size: 1.52rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em;
+  color: var(--text-1); margin-bottom: 14px; flex: 0 0 auto;
+}
+.fc-scroll {
+  flex: 1; overflow-y: auto; scrollbar-width: none;
+  display: flex; flex-direction: column; gap: 13px;
+}
+.fc-scroll::-webkit-scrollbar { display: none; }
+.fc-liner { font-size: 14px; line-height: 1.7; color: #adb8c8; }
+.fc-sublabel { font-size: 9px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin-bottom: 5px; }
+.fc-example-box {
+  font-size: 13px; line-height: 1.58; color: var(--text-2);
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border-soft);
+  border-radius: 9px; padding: 10px 13px;
+}
+.fc-why-text { font-size: 13px; line-height: 1.58; color: var(--text-2); }
+.fc-more {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 500; color: var(--accent-light);
+  text-decoration: none; transition: gap 0.2s;
+}
+.fc-more:hover { gap: 10px; }
+
+.fc-nav {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 10px; margin-top: 16px;
+}
+.fc-btn {
+  width: 36px; height: 36px; background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border); border-radius: 9px;
+  color: var(--text-2); font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; font-family: inherit; flex: 0 0 auto;
+}
+.fc-btn:hover:not(:disabled) { background: var(--accent-soft); border-color: rgba(124,111,245,0.35); color: var(--accent-light); }
+.fc-btn:disabled { opacity: 0.22; cursor: not-allowed; }
+.fc-pips { display: flex; gap: 5px; align-items: center; flex: 1; justify-content: center; flex-wrap: wrap; }
+.fc-pip {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--text-3);
+  cursor: pointer; transition: all 0.22s; border: none; padding: 0;
+}
+.fc-pip.active { background: var(--accent-light); transform: scale(1.45); }
+.fc-tally { font-size: 12px; font-weight: 500; color: var(--text-3); letter-spacing: 0.05em; flex: 0 0 auto; }
+
+/* error / empty */
+.err-view {
+  height: calc(100vh - var(--header-h)); scroll-snap-align: start;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 16px; text-align: center; padding: 64px;
+}
+.err-icon { font-size: 2.8rem; opacity: 0.35; }
+.err-title { font-size: 1.2rem; font-weight: 600; color: var(--text-2); }
+.err-body { font-size: 14px; color: var(--text-3); max-width: 420px; line-height: 1.65; }
+
+.fc-spin-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 14px; }
+.fc-ring { width: 30px; height: 30px; border: 2px solid rgba(124,111,245,0.14); border-top: 2px solid var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite; }
+.fc-ring-label { font-size: 13px; color: var(--text-3); }
+
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="pulse-rig"><div class="pulse-core"></div></div>
+    <div class="logo-text">
+      <span class="logo-name">AI Pulse</span>
+      <span class="logo-tagline">Daily Intelligence</span>
+    </div>
+    <div class="header-sep"></div>
+  </div>
+
+  <nav class="article-nav" id="article-nav">
+    <span class="nav-counter" id="nav-counter"></span>
+  </nav>
+
+  <div class="header-right">
+    <span class="h-date" id="h-date"></span>
+    <div class="live-pill"><span class="live-blink"></span>Live</div>
+    <button class="btn-refresh" id="refresh-btn" onclick="loadAll()">
+      <span class="refresh-ic">↻</span>Refresh
+    </button>
+  </div>
+</header>
+
+<!-- LEFT PANEL -->
+<div class="left-panel" id="left-panel">
+  <div class="loading-view">
+    <div class="ring-loader"></div>
+    <div class="loading-headline">Building your daily digest…</div>
+    <div class="pipeline">
+      <div class="pipe-step"><div class="pipe-dot"></div>Scouting Hacker News, Reddit &amp; 40 publications</div>
+      <div class="pipe-step"><div class="pipe-dot"></div>Curating for business relevance</div>
+      <div class="pipe-step"><div class="pipe-dot"></div>Writing expert briefings</div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="fc-wrap">
+    <div class="fc-section-label">Daily Flashcards</div>
+    <div class="fc-card" id="fc-card">
+      <div class="fc-spin-wrap">
+        <div class="fc-ring"></div>
+        <div class="fc-ring-label">Loading flashcards…</div>
+      </div>
+    </div>
+    <div class="fc-nav" id="fc-nav" style="display:none">
+      <button class="fc-btn" id="fc-prev" onclick="shiftCard(-1)">&#8249;</button>
+      <div class="fc-pips" id="fc-pips"></div>
+      <span class="fc-tally" id="fc-tally"></span>
+      <button class="fc-btn" id="fc-next" onclick="shiftCard(1)">&#8250;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let flashcards  = [];
+let currentCard = 0;
+let articles    = [];
+let currentArt  = 0;
+let artObserver = null;
+
+(function boot() {
+  document.getElementById('h-date').textContent = new Date().toLocaleDateString('en-US', {
+    weekday: 'short', month: 'long', day: 'numeric'
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft')  shiftCard(-1);
+    if (e.key === 'ArrowRight') shiftCard(1);
+    if (e.key === 'ArrowDown')  scrollArt(1);
+    if (e.key === 'ArrowUp')    scrollArt(-1);
+  });
+  loadAll();
+})();
+
+async function loadAll() {
+  var btn = document.getElementById('refresh-btn');
+  btn.disabled = true;
+  btn.classList.add('spinning');
+  resetLeft();
+  clearNav();
+
+  var results = await Promise.allSettled([fetchDigest(), fetchBuzz()]);
+  btn.disabled = false;
+  btn.classList.remove('spinning');
+
+  var d = results[0], b = results[1];
+  if (d.status === 'fulfilled') renderDigest(d.value);
+  else renderErr(d.reason && d.reason.message ? d.reason.message : 'Failed to load digest');
+
+  if (b.status === 'fulfilled' && b.value.flashcards && b.value.flashcards.length) {
+    flashcards = b.value.flashcards;
+    currentCard = 0;
+    drawCard();
+    buildPips();
+    document.getElementById('fc-nav').style.display = 'flex';
+  }
+}
+
+async function fetchDigest() {
+  var r = await fetch('/api/digest');
+  if (!r.ok) { var e = await r.json().catch(function(){ return {}; }); throw new Error(e.detail || 'HTTP ' + r.status); }
+  return r.json();
+}
+async function fetchBuzz() {
+  var r = await fetch('/api/buzzword');
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+
+function resetLeft() {
+  if (artObserver) { artObserver.disconnect(); artObserver = null; }
+  articles = []; currentArt = 0;
+  document.getElementById('left-panel').innerHTML =
+    '<div class="loading-view">' +
+      '<div class="ring-loader"></div>' +
+      '<div class="loading-headline">Building your daily digest\u2026</div>' +
+      '<div class="pipeline">' +
+        '<div class="pipe-step"><div class="pipe-dot"></div>Scouting Hacker News, Reddit &amp; 40 publications</div>' +
+        '<div class="pipe-step"><div class="pipe-dot"></div>Curating for business relevance</div>' +
+        '<div class="pipe-step"><div class="pipe-dot"></div>Writing expert briefings</div>' +
+      '</div>' +
+    '</div>';
+}
+
+function renderDigest(data) {
+  articles = data.stories || [];
+  var panel = document.getElementById('left-panel');
+  panel.innerHTML = '';
+
+  if (!articles.length) {
+    panel.innerHTML = '<div class="err-view"><div class="err-icon">📭</div><div class="err-title">Nothing today</div><div class="err-body">No high-signal stories passed the relevance filter. Try refreshing later.</div></div>';
+    return;
+  }
+
+  panel.appendChild(buildIntro(data.intro || '', articles.length, data.pipeline_stats));
+
+  var leadIdx = data.lead_index || 0;
+  for (var i = 0; i < articles.length; i++) {
+    panel.appendChild(buildArticle(articles[i], i, articles.length, i === leadIdx));
+  }
+
+  buildNavPips(articles.length + 1);
+  setActiveNav(0);
+  setupObserver(panel);
+}
+
+function buildIntro(intro, count, stats) {
+  var el = document.createElement('div');
+  el.className = 'intro-section';
+  el.dataset.navIdx = '0';
+  var now = new Date();
+  var dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  var fetched  = stats && stats.total_fetched ? stats.total_fetched : 0;
+  var accepted = stats && stats.accepted ? stats.accepted : count;
+
+  el.innerHTML =
+    '<div class="intro-eyebrow">Daily Intelligence Report</div>' +
+    '<div class="intro-date-big">' + esc(dateStr) + '</div>' +
+    (intro ? '<div class="intro-text">' + esc(intro) + '</div>' : '') +
+    '<div class="intro-stats-row">' +
+      '<div class="intro-stat-item"><div class="stat-number">' + accepted + '</div><div class="stat-label">Stories curated</div></div>' +
+      (fetched ? '<div class="intro-stat-div"></div><div class="intro-stat-item"><div class="stat-number">' + fetched + '</div><div class="stat-label">Sources scanned</div></div>' : '') +
+      '<div class="intro-stat-div"></div>' +
+      '<div class="intro-stat-item"><div class="stat-number">40+</div><div class="stat-label">Publications</div></div>' +
+    '</div>' +
+    '<div class="begin-hint"><span class="down-arrow">&#8595;</span>Scroll to read</div>';
+  return el;
+}
+
+function buildArticle(s, idx, total, isLead) {
+  var el = document.createElement('div');
+  el.className = 'article-section' + (isLead ? ' is-lead' : '');
+  el.dataset.navIdx = String(idx + 1);
+  var score  = s.relevance_score ? s.relevance_score + '/10' : null;
+  var isLast = idx === total - 1;
+
+  el.innerHTML =
+    '<div class="art-meta">' +
+      '<span class="badge badge-source">' + esc(s.source || 'Source') + '</span>' +
+      (s.knowledge_category ? '<span class="badge badge-cat">' + esc(s.knowledge_category) + '</span>' : '') +
+      (isLead ? '<span class="badge badge-lead">&#9733; Lead story</span>' : '') +
+      (score  ? '<span class="badge badge-score">&#8593; ' + score + '</span>' : '') +
+      '<span class="art-index">' + pad(idx + 1) + ' / ' + pad(total) + '</span>' +
+    '</div>' +
+    '<h2 class="art-headline">' + esc(s.title || 'Untitled') + '</h2>' +
+    (s.signal_reason ? '<div class="signal-bar">' + esc(s.signal_reason) + '</div>' : '') +
+    '<p class="art-briefing">' + esc(s.briefing || '') + '</p>' +
+    '<div class="art-footer">' +
+      buildStats(s) +
+      (s.url ? '<a class="read-btn" href="' + esc(s.url) + '" target="_blank" rel="noopener">Read full story &#8594;</a>' : '') +
+    '</div>' +
+    (!isLast ? '<div class="scroll-cue"><span class="down-arrow">&#8595;</span>Next story</div>' : '');
+  return el;
+}
+
+function buildStats(s) {
+  var parts = [];
+  if (s.score)    parts.push('<div class="art-stat"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg>' + s.score + '</div>');
+  if (s.comments) parts.push('<div class="art-stat"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" opacity=".5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' + s.comments + ' comments</div>');
+  return parts.join('');
+}
+
+function renderErr(msg) {
+  document.getElementById('left-panel').innerHTML =
+    '<div class="err-view"><div class="err-icon">&#9888;</div><div class="err-title">Digest unavailable</div><div class="err-body">' + esc(msg) + '</div></div>';
+}
+
+function setupObserver(root) {
+  artObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        var idx = parseInt(e.target.dataset.navIdx);
+        currentArt = idx;
+        setActiveNav(idx);
+      }
+    });
+  }, { threshold: 0.55, root: root });
+  root.querySelectorAll('[data-nav-idx]').forEach(function(el) { artObserver.observe(el); });
+}
+
+/* Nav pips */
+function buildNavPips(count) {
+  var nav = document.getElementById('article-nav');
+  var ctr = document.getElementById('nav-counter');
+  nav.querySelectorAll('.nav-pip').forEach(function(p) { p.remove(); });
+  for (var i = 0; i < count; i++) {
+    (function(idx) {
+      var pip = document.createElement('button');
+      pip.className = 'nav-pip';
+      pip.addEventListener('click', function() { jumpToNav(idx); });
+      nav.insertBefore(pip, ctr);
+    })(i);
+  }
+}
+function clearNav() {
+  document.getElementById('article-nav').querySelectorAll('.nav-pip').forEach(function(p) { p.remove(); });
+  document.getElementById('nav-counter').textContent = '';
+}
+function setActiveNav(idx) {
+  var pips = document.querySelectorAll('.nav-pip');
+  pips.forEach(function(p, i) { p.classList.toggle('active', i === idx); });
+  document.getElementById('nav-counter').textContent = pips.length ? (idx + 1) + ' / ' + pips.length : '';
+}
+function jumpToNav(idx) {
+  var sections = document.querySelectorAll('[data-nav-idx]');
+  if (sections[idx]) sections[idx].scrollIntoView({ block: 'start' });
+}
+function scrollArt(dir) {
+  var sections = document.querySelectorAll('[data-nav-idx]');
+  var next = Math.max(0, Math.min(sections.length - 1, currentArt + dir));
+  if (sections[next]) sections[next].scrollIntoView({ block: 'start' });
+}
+
+/* Flashcards */
+function shiftCard(dir) {
+  var n = currentCard + dir;
+  if (n < 0 || n >= flashcards.length) return;
+  currentCard = n; drawCard(); syncPips();
+}
+function jumpCard(idx) {
+  if (idx < 0 || idx >= flashcards.length) return;
+  currentCard = idx; drawCard(); syncPips();
+}
+function drawCard() {
+  var c = flashcards[currentCard];
+  if (!c) return;
+  var el = document.getElementById('fc-card');
+  el.innerHTML =
+    '<span class="fc-diff ' + (c.difficulty || 'Beginner') + '">' + esc(c.difficulty || 'Beginner') + '</span>' +
+    '<div class="fc-term">' + esc(c.term || '') + '</div>' +
+    '<div class="fc-scroll">' +
+      '<div class="fc-liner">' + esc(c.one_liner || '') + '</div>' +
+      (c.example ? '<div><div class="fc-sublabel">Example</div><div class="fc-example-box">' + esc(c.example) + '</div></div>' : '') +
+      (c.why_it_matters ? '<div><div class="fc-sublabel">Why it matters</div><div class="fc-why-text">' + esc(c.why_it_matters) + '</div></div>' : '') +
+      (c.read_more_url ? '<a class="fc-more" href="' + esc(c.read_more_url) + '" target="_blank" rel="noopener">Learn more &#8594;</a>' : '') +
+    '</div>';
+}
+function buildPips() {
+  var el = document.getElementById('fc-pips');
+  el.innerHTML = '';
+  flashcards.forEach(function(_, i) {
+    (function(idx) {
+      var p = document.createElement('button');
+      p.className = 'fc-pip' + (idx === 0 ? ' active' : '');
+      p.addEventListener('click', function() { jumpCard(idx); });
+      el.appendChild(p);
+    })(i);
+  });
+  syncPips();
+}
+function syncPips() {
+  document.getElementById('fc-prev').disabled = currentCard === 0;
+  document.getElementById('fc-next').disabled = currentCard === flashcards.length - 1;
+  document.getElementById('fc-tally').textContent = (currentCard + 1) + ' / ' + flashcards.length;
+  document.querySelectorAll('.fc-pip').forEach(function(p, i) { p.classList.toggle('active', i === currentCard); });
+}
+
+/* Util */
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function pad(n) { return n < 10 ? '0' + n : String(n); }
+</script>
+</body>
+</html>

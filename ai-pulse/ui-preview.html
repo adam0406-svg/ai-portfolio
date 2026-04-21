@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Pulse — UI Direction Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=DM+Serif+Display&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      padding: 48px 32px;
+    }
+
+    h1 {
+      font-size: 22px; font-weight: 700; margin-bottom: 8px; color: #fff;
+    }
+    .subtitle { color: #666; font-size: 14px; margin-bottom: 48px; }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .option-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: #555; margin-bottom: 12px;
+    }
+
+    .option-name {
+      font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #fff;
+    }
+
+    .option-desc {
+      font-size: 13px; color: #666; margin-bottom: 20px; line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════════════════
+       OPTION A — CLEAN MINIMAL
+       Inspired by: Linear, Vercel, Raycast
+    ══════════════════════════════════════════════════ */
+    .preview-a {
+      background: #0f0f0f;
+      border: 1px solid #1a1a1a;
+      border-radius: 16px;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .a-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .a-logo { display: flex; align-items: center; gap: 8px; }
+    .a-logo-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #fff;
+    }
+    .a-logo-text { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: -0.2px; }
+    .a-date { font-size: 11px; color: #444; }
+
+    .a-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 12px; }
+
+    .a-story {
+      padding: 12px 14px;
+      border: 1px solid #1d1d1d;
+      border-radius: 10px;
+      background: #0f0f0f;
+      transition: border-color 0.15s;
+    }
+
+    .a-story-meta {
+      display: flex; align-items: center; gap: 6px; margin-bottom: 7px;
+    }
+
+    .a-chip {
+      font-size: 10px; font-weight: 600; padding: 2px 7px;
+      border-radius: 4px; background: #1a1a1a; color: #555;
+      letter-spacing: 0.3px;
+    }
+
+    .a-chip.cat { color: #6366f1; background: rgba(99,102,241,0.1); }
+
+    .a-story-title { font-size: 12.5px; font-weight: 500; color: #ccc; line-height: 1.45; margin-bottom: 6px; }
+    .a-story-brief { font-size: 11px; color: #555; line-height: 1.55; }
+
+    .a-divider { height: 1px; background: #1a1a1a; }
+
+    .a-flashcard {
+      padding: 14px;
+      background: #111;
+      border: 1px solid #1d1d1d;
+      border-radius: 10px;
+    }
+
+    .a-fc-label { font-size: 10px; color: #444; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+    .a-fc-term { font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 6px; letter-spacing: -0.3px; }
+    .a-fc-def { font-size: 11px; color: #555; line-height: 1.6; margin-bottom: 10px; }
+    .a-fc-link { font-size: 10px; color: #6366f1; letter-spacing: 0.3px; }
+
+    .a-fc-nav {
+      display: flex; align-items: center; gap: 6px; margin-top: 10px;
+    }
+    .a-nav-btn {
+      width: 22px; height: 22px; border-radius: 5px;
+      border: 1px solid #222; background: #0f0f0f;
+      color: #555; font-size: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .a-dots { display: flex; gap: 4px; margin-left: 6px; }
+    .a-dot { width: 4px; height: 4px; border-radius: 50%; background: #2a2a2a; }
+    .a-dot.on { background: #6366f1; }
+
+
+    /* ══════════════════════════════════════════════════
+       OPTION B — EDITORIAL / MAGAZINE
+       Inspired by: The Information, Bloomberg, Axios
+    ══════════════════════════════════════════════════ */
+    .preview-b {
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      color: #111;
+    }
+
+    .b-header {
+      background: #111;
+      padding: 14px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .b-logo-text {
+      font-size: 15px; font-weight: 800; color: #fff;
+      letter-spacing: -0.5px;
+    }
+
+    .b-logo-sub { font-size: 10px; color: #666; letter-spacing: 1px; text-transform: uppercase; }
+
+    .b-date { font-size: 11px; color: #555; }
+
+    .b-body { padding: 16px 18px; display: flex; flex-direction: column; gap: 0; }
+
+    .b-lead {
+      padding-bottom: 12px;
+      border-bottom: 2px solid #111;
+      margin-bottom: 12px;
+    }
+
+    .b-lead-label {
+      font-size: 10px; font-weight: 800; color: #e11d48;
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px;
+    }
+
+    .b-lead-title {
+      font-size: 14px; font-weight: 700; color: #111;
+      line-height: 1.4; margin-bottom: 6px;
+    }
+
+    .b-lead-brief { font-size: 11px; color: #555; line-height: 1.6; }
+
+    .b-story {
+      padding: 10px 0;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .b-story-source {
+      font-size: 10px; font-weight: 700; color: #e11d48;
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 3px;
+    }
+
+    .b-story-title { font-size: 12px; font-weight: 600; color: #111; line-height: 1.4; margin-bottom: 4px; }
+    .b-story-brief { font-size: 11px; color: #666; line-height: 1.5; }
+
+    .b-flashcard {
+      margin-top: 12px;
+      background: #f8f8f8;
+      border-radius: 8px;
+      padding: 14px;
+      border-left: 3px solid #111;
+    }
+
+    .b-fc-label { font-size: 10px; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+    .b-fc-counter { float: right; font-size: 10px; color: #bbb; }
+    .b-fc-term { font-size: 15px; font-weight: 800; color: #111; margin-bottom: 5px; }
+    .b-fc-def { font-size: 11px; color: #555; line-height: 1.6; margin-bottom: 8px; }
+    .b-fc-link { font-size: 10px; font-weight: 700; color: #111; text-decoration: underline; }
+    .b-fc-nav { display: flex; gap: 6px; margin-top: 10px; }
+    .b-nav-btn {
+      font-size: 11px; font-weight: 600; padding: 3px 10px;
+      border: 1px solid #ddd; border-radius: 4px; color: #555;
+      background: #fff;
+    }
+
+
+    /* ══════════════════════════════════════════════════
+       OPTION C — MODERN GLASS / PREMIUM DARK
+       Inspired by: Figma, Framer, Linear Pro
+    ══════════════════════════════════════════════════ */
+    .preview-c {
+      background: linear-gradient(145deg, #0d0d1a, #0d1117);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      overflow: hidden;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .c-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .c-logo { display: flex; align-items: center; gap: 10px; }
+
+    .c-logo-icon {
+      width: 26px; height: 26px; border-radius: 7px;
+      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      box-shadow: 0 0 12px rgba(124,58,237,0.4);
+    }
+
+    .c-logo-text { font-size: 14px; font-weight: 700; color: #fff; letter-spacing: -0.3px; }
+
+    .c-date { font-size: 11px; color: rgba(255,255,255,0.25); }
+
+    .c-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+
+    .c-story {
+      padding: 12px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px;
+      transition: all 0.2s;
+    }
+
+    .c-story-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 7px; }
+
+    .c-chip {
+      font-size: 10px; font-weight: 600; padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(124,58,237,0.15);
+      color: #a78bfa;
+      border: 1px solid rgba(124,58,237,0.2);
+    }
+
+    .c-chip.source {
+      background: rgba(255,255,255,0.05);
+      color: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.08);
+    }
+
+    .c-score {
+      margin-left: auto;
+      font-size: 10px; font-weight: 700;
+      color: #34d399;
+    }
+
+    .c-story-title {
+      font-size: 12.5px; font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.4; margin-bottom: 5px;
+    }
+
+    .c-story-brief {
+      font-size: 11px; color: rgba(255,255,255,0.35); line-height: 1.55;
+    }
+
+    .c-story.lead {
+      background: rgba(124,58,237,0.08);
+      border-color: rgba(124,58,237,0.2);
+    }
+
+    .c-lead-pill {
+      font-size: 9px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #a78bfa;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.25);
+      padding: 2px 7px; border-radius: 20px;
+    }
+
+    .c-flashcard {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .c-fc-header {
+      background: linear-gradient(90deg, rgba(124,58,237,0.3), rgba(79,70,229,0.15));
+      padding: 10px 14px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .c-fc-title { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); letter-spacing: 0.8px; text-transform: uppercase; }
+    .c-fc-counter { font-size: 10px; color: rgba(255,255,255,0.25); }
+
+    .c-fc-body { padding: 14px; }
+    .c-fc-term { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 6px; letter-spacing: -0.3px; }
+    .c-diff {
+      display: inline-block; font-size: 10px; font-weight: 600;
+      padding: 2px 8px; border-radius: 20px; margin-bottom: 10px;
+      background: rgba(52,211,153,0.12); color: #34d399;
+      border: 1px solid rgba(52,211,153,0.2);
+    }
+    .c-fc-def { font-size: 11px; color: rgba(255,255,255,0.45); line-height: 1.6; margin-bottom: 10px; }
+    .c-fc-link {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 10px; font-weight: 600; color: #a78bfa;
+    }
+
+    .c-fc-nav { display: flex; align-items: center; gap: 6px; padding: 8px 14px; border-top: 1px solid rgba(255,255,255,0.04); }
+    .c-nav-btn {
+      width: 22px; height: 22px; border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: rgba(255,255,255,0.4); font-size: 13px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .c-dots { display: flex; gap: 4px; margin-left: 4px; }
+    .c-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+    .c-dot.on { background: #7c3aed; }
+  </style>
+</head>
+<body>
+
+  <h1>UI Direction Preview</h1>
+  <p class="subtitle">Three directions for AI Pulse. Pick one and I'll build the full thing.</p>
+
+  <div class="options">
+
+    <!-- ─── OPTION A ─── -->
+    <div>
+      <div class="option-label">Option A</div>
+      <div class="option-name">Clean & Minimal</div>
+      <div class="option-desc">Near-black background, very subtle borders, tight spacing. Inspired by Linear and Vercel. Feels precise and quiet — the content does all the work.</div>
+
+      <div class="preview-a">
+        <div class="a-header">
+          <div class="a-logo">
+            <div class="a-logo-dot"></div>
+            <span class="a-logo-text">AI Pulse</span>
+          </div>
+          <span class="a-date">Tuesday, April 14</span>
+        </div>
+        <div class="a-body">
+
+          <div class="a-story">
+            <div class="a-story-meta">
+              <span class="a-chip">VentureBeat</span>
+              <span class="a-chip cat">Business Use Case</span>
+            </div>
+            <div class="a-story-title">JPMorgan deploys AI agents across 200 legal workflows, cutting review time by 60%</div>
+            <div class="a-story-brief">Contract analysis agents now handle first-pass review across their legal division, freeing lawyers for higher-judgment work.</div>
+          </div>
+
+          <div class="a-story">
+            <div class="a-story-meta">
+              <span class="a-chip">McKinsey</span>
+              <span class="a-chip cat">AI Strategy</span>
+            </div>
+            <div class="a-story-title">How retailers are deploying AI for demand forecasting — and what's actually working</div>
+            <div class="a-story-brief">Three case studies from Walmart, Zara, and a mid-market grocer show where AI forecasting beats human judgment.</div>
+          </div>
+
+          <div class="a-divider"></div>
+
+          <div class="a-flashcard">
+            <div class="a-fc-label">Daily Flashcard · 1 of 8</div>
+            <div class="a-fc-term">Retrieval-Augmented Generation</div>
+            <div class="a-fc-def">A technique where an AI retrieves relevant documents from a knowledge base before generating a response — grounding answers in real data instead of training memory.</div>
+            <div class="a-fc-link">Read more →</div>
+            <div class="a-fc-nav">
+              <div class="a-nav-btn">‹</div>
+              <div class="a-nav-btn">›</div>
+              <div class="a-dots">
+                <div class="a-dot on"></div>
+                <div class="a-dot"></div>
+                <div class="a-dot"></div>
+                <div class="a-dot"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── OPTION B ─── -->
+    <div>
+      <div class="option-label">Option B</div>
+      <div class="option-name">Editorial / Magazine</div>
+      <div class="option-desc">White background, strong typography, bold red accents. Inspired by Bloomberg and The Information. Feels like a premium daily briefing you'd pay for.</div>
+
+      <div class="preview-b">
+        <div class="b-header">
+          <div>
+            <div class="b-logo-text">AI PULSE</div>
+            <div class="b-logo-sub">Daily Briefing</div>
+          </div>
+          <span class="b-date">Tuesday, April 14</span>
+        </div>
+        <div class="b-body">
+
+          <div class="b-lead">
+            <div class="b-lead-label">⚡ Lead Story</div>
+            <div class="b-lead-title">JPMorgan deploys AI agents across 200 legal workflows, cutting review time by 60%</div>
+            <div class="b-lead-brief">Contract analysis agents now handle first-pass review across their legal division, freeing lawyers for higher-judgment work.</div>
+          </div>
+
+          <div class="b-story">
+            <div class="b-story-source">McKinsey Insights · AI Strategy</div>
+            <div class="b-story-title">How retailers are deploying AI for demand forecasting — and what's actually working</div>
+            <div class="b-story-brief">Three case studies from Walmart, Zara, and a mid-market grocer show where AI forecasting beats human judgment.</div>
+          </div>
+
+          <div class="b-story">
+            <div class="b-story-source">HBR · Industry Application</div>
+            <div class="b-story-title">The hospitals quietly automating administrative work — and the ones hitting walls</div>
+            <div class="b-story-brief">Prior-auth, scheduling, and coding are the three areas seeing real traction. Everything else is still pilot territory.</div>
+          </div>
+
+          <div class="b-flashcard">
+            <span class="b-fc-counter">1 / 8</span>
+            <div class="b-fc-label">Daily Flashcard</div>
+            <div class="b-fc-term">Retrieval-Augmented Generation</div>
+            <div class="b-fc-def">A technique where an AI retrieves relevant documents from a knowledge base before generating a response — grounding answers in real data instead of training memory.</div>
+            <div class="b-fc-link">Read more →</div>
+            <div class="b-fc-nav">
+              <div class="b-nav-btn">← Prev</div>
+              <div class="b-nav-btn">Next →</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── OPTION C ─── -->
+    <div>
+      <div class="option-label">Option C</div>
+      <div class="option-name">Modern Premium Dark</div>
+      <div class="option-desc">Deep navy background, purple accents, subtle gradients, rounded pill badges. Inspired by Framer and Figma. Feels like a high-end SaaS product.</div>
+
+      <div class="preview-c">
+        <div class="c-header">
+          <div class="c-logo">
+            <div class="c-logo-icon">⚡</div>
+            <span class="c-logo-text">AI Pulse</span>
+          </div>
+          <span class="c-date">Tuesday, April 14</span>
+        </div>
+        <div class="c-body">
+
+          <div class="c-story lead">
+            <div class="c-story-meta">
+              <span class="c-lead-pill">Lead</span>
+              <span class="c-chip">Business Use Case</span>
+              <span class="c-score">★ 9/10</span>
+            </div>
+            <div class="c-story-title">JPMorgan deploys AI agents across 200 legal workflows, cutting review time by 60%</div>
+            <div class="c-story-brief">Contract analysis agents now handle first-pass review across their legal division, freeing lawyers for higher-judgment work.</div>
+          </div>
+
+          <div class="c-story">
+            <div class="c-story-meta">
+              <span class="c-chip source">McKinsey</span>
+              <span class="c-chip">AI Strategy</span>
+              <span class="c-score">★ 8/10</span>
+            </div>
+            <div class="c-story-title">How retailers are deploying AI for demand forecasting — and what's actually working</div>
+            <div class="c-story-brief">Three case studies show where AI forecasting beats human judgment.</div>
+          </div>
+
+          <div class="c-flashcard">
+            <div class="c-fc-header">
+              <span class="c-fc-title">Daily Flashcard</span>
+              <span class="c-fc-counter">1 / 8</span>
+            </div>
+            <div class="c-fc-body">
+              <div class="c-fc-term">Retrieval-Augmented Generation</div>
+              <span class="c-diff">Intermediate</span>
+              <div class="c-fc-def">A technique where an AI retrieves relevant documents from a knowledge base before generating a response — grounding answers in real data instead of training memory.</div>
+              <div class="c-fc-link">Read more →</div>
+            </div>
+            <div class="c-fc-nav">
+              <div class="c-nav-btn">‹</div>
+              <div class="c-nav-btn">›</div>
+              <div class="c-dots">
+                <div class="c-dot on"></div>
+                <div class="c-dot"></div>
+                <div class="c-dot"></div>
+                <div class="c-dot"></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADAM.AI // REPRESENTATIVE SYSTEM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #080808;
+  --bg2:       #0D0D0D;
+  --bg3:       #111111;
+  --g0:        #001A00;
+  --g1:        #003800;
+  --g2:        #006B00;
+  --g3:        #00A300;
+  --g4:        #00D400;
+  --g5:        #00FF41;
+  --g6:        #80FFB0;
+  --amber:     #FFB300;
+  --red:       #FF3333;
+  --cyan:      #00E5FF;
+  --glow:      0 0 8px rgba(0,255,65,0.6), 0 0 20px rgba(0,255,65,0.2);
+  --glow-dim:  0 0 4px rgba(0,255,65,0.3);
+  --font:      'JetBrains Mono', 'Courier New', monospace;
+}
+
+html, body {
+  height: 100%;
+  background: #000;
+  color: var(--g4);
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow: hidden;
+}
+
+/* ── CRT EFFECTS ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.6) 100%);
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* ── BOOT SCREEN ── */
+#boot {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px;
+  z-index: 9999;
+  transition: opacity 0.8s ease;
+}
+
+#boot.fade-out { opacity: 0; pointer-events: none; }
+
+#boot-lines { width: 100%; max-width: 700px; }
+
+.boot-line {
+  color: var(--g4);
+  font-size: 13px;
+  line-height: 1.8;
+  opacity: 0;
+  white-space: nowrap;
+}
+
+.boot-line.show { opacity: 1; }
+.boot-line.bright { color: var(--g5); text-shadow: var(--glow); }
+.boot-line.dim { color: var(--g2); }
+.boot-line.ok::after { content: ' [OK]'; color: var(--g5); }
+.boot-line.warn { color: var(--amber); }
+
+/* ── TERMINAL WRAPPER ── */
+.terminal {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  height: 100vh;
+  background: var(--bg);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.terminal.visible { opacity: 1; }
+
+/* ── TOP BAR ── */
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--g1);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.top-bar-title {
+  color: var(--g5);
+  font-size: 12px;
+  font-weight: 700;
+  text-shadow: var(--glow);
+  letter-spacing: 1px;
+}
+
+.top-bar-meta {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.top-bar-meta span {
+  color: var(--g2);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+#boot-canvas {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: 1px solid var(--g2);
+  box-shadow: 0 0 24px rgba(0,255,65,0.25), 0 0 60px rgba(0,255,65,0.08);
+  margin-bottom: 28px;
+  display: block;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--g5);
+  border-radius: 50%;
+  margin-right: 5px;
+  box-shadow: 0 0 6px var(--g5);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--g5); }
+  50% { opacity: 0.6; box-shadow: 0 0 12px var(--g5); }
+}
+
+/* ── MODE BAR ── */
+.mode-bar {
+  display: flex;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--g1);
+  padding: 0 16px;
+  gap: 2px;
+}
+
+.mode-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--g2);
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  padding: 9px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  outline: none;
+}
+
+.mode-btn:hover { color: var(--g4); }
+
+.mode-btn.active {
+  color: var(--g5);
+  border-bottom-color: var(--g5);
+  text-shadow: var(--glow-dim);
+}
+
+/* ── SCREEN ── */
+.screen {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  position: relative;
+}
+
+.view { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+.view.active { display: flex; }
+
+/* ── MESSAGES ── */
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 20px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--g1) transparent;
+}
+
+#messages::-webkit-scrollbar { width: 4px; }
+#messages::-webkit-scrollbar-thumb { background: var(--g1); }
+
+/* ── SYS WELCOME ── */
+.sys-welcome {
+  margin-bottom: 24px;
+  border: 1px solid var(--g1);
+  background: var(--g0);
+  padding: 14px 16px;
+}
+
+.sys-welcome-header {
+  color: var(--g5);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  text-shadow: var(--glow-dim);
+}
+
+.sys-welcome-body {
+  color: var(--g3);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.sys-welcome-contacts {
+  margin-top: 10px;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.sys-link {
+  color: var(--cyan);
+  text-decoration: none;
+  font-size: 11px;
+  transition: all 0.15s;
+}
+
+.sys-link:hover { text-shadow: 0 0 8px var(--cyan); }
+
+/* ── SUGGESTIONS ── */
+#suggestions {
+  margin-bottom: 20px;
+}
+
+.sug-label {
+  color: var(--g2);
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.sug-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sug-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--g3);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: all 0.1s;
+  background: none;
+  border: none;
+  font-family: var(--font);
+  text-align: left;
+}
+
+.sug-item:hover { color: var(--g5); }
+.sug-item:hover .sug-arrow { text-shadow: var(--glow-dim); }
+
+.sug-arrow { color: var(--g2); transition: all 0.1s; }
+.sug-item:hover .sug-arrow { color: var(--g5); }
+
+/* ── MESSAGES ── */
+.msg {
+  margin-bottom: 18px;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.msg-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.msg-who {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.msg-who.user { color: var(--amber); }
+.msg-who.assistant { color: var(--g5); text-shadow: var(--glow-dim); }
+
+.msg-time {
+  color: var(--g1);
+  font-size: 10px;
+}
+
+.msg-divider {
+  height: 1px;
+  background: var(--g1);
+  margin-bottom: 7px;
+}
+
+.msg-body {
+  color: var(--g4);
+  font-size: 13px;
+  padding-left: 0;
+}
+
+.msg-body.user-body {
+  color: var(--amber);
+  opacity: 0.9;
+}
+
+.msg-body.user-body::before {
+  content: '> ';
+  color: var(--amber);
+  opacity: 0.6;
+}
+
+/* markdown in terminal style */
+.msg-body strong { color: var(--g5); font-weight: 700; }
+.msg-body em { color: var(--g6); font-style: normal; text-decoration: underline; text-decoration-style: dotted; }
+.msg-body a { color: var(--cyan); text-decoration: none; }
+.msg-body a:hover { text-shadow: 0 0 8px var(--cyan); }
+.msg-body ul { list-style: none; padding: 0; }
+.msg-body ul li::before { content: '  ├ '; color: var(--g2); }
+.msg-body ul li:last-child::before { content: '  └ '; color: var(--g2); }
+.msg-body p { margin-bottom: 8px; }
+.msg-body p:last-child { margin-bottom: 0; }
+
+/* blinking cursor */
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background: var(--g5);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 0.8s step-end infinite;
+  box-shadow: 0 0 6px var(--g5);
+}
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
+/* ── INPUT AREA ── */
+.input-area {
+  padding: 10px 20px 14px;
+  border-top: 1px solid var(--g1);
+  background: var(--bg2);
+}
+
+.input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.prompt-symbol {
+  color: var(--g5);
+  font-size: 16px;
+  font-weight: 700;
+  padding-bottom: 10px;
+  text-shadow: var(--glow);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+#chat-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--g2);
+  color: var(--amber);
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 6px 0;
+  resize: none;
+  min-height: 34px;
+  max-height: 100px;
+  outline: none;
+  caret-color: var(--g5);
+  transition: border-color 0.15s;
+}
+
+#chat-input:focus { border-bottom-color: var(--g5); }
+#chat-input::placeholder { color: var(--g1); }
+
+.send-btn {
+  background: none;
+  border: 1px solid var(--g2);
+  color: var(--g4);
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.send-btn:hover:not(:disabled) {
+  border-color: var(--g5);
+  color: var(--g5);
+  text-shadow: var(--glow-dim);
+  box-shadow: inset 0 0 8px rgba(0,255,65,0.05);
+}
+
+.send-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+.hint-line {
+  font-size: 10px;
+  color: var(--g1);
+  padding-top: 6px;
+  letter-spacing: 0.5px;
+}
+
+/* ── ANALYSE VIEW ── */
+#analyse-view {
+  padding: 20px;
+  gap: 14px;
+  overflow-y: auto;
+}
+
+.analyse-header {
+  color: var(--g5);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-shadow: var(--glow-dim);
+}
+
+.analyse-desc {
+  color: var(--g2);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.jd-wrapper {
+  border: 1px solid var(--g1);
+  background: var(--g0);
+  position: relative;
+}
+
+.jd-label {
+  font-size: 10px;
+  color: var(--g2);
+  letter-spacing: 1px;
+  padding: 8px 12px 4px;
+  border-bottom: 1px solid var(--g1);
+}
+
+#jd-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--amber);
+  font-family: var(--font);
+  font-size: 12px;
+  line-height: 1.7;
+  padding: 10px 12px;
+  resize: none;
+  min-height: 140px;
+  max-height: 220px;
+  outline: none;
+  caret-color: var(--g5);
+}
+
+#jd-input::placeholder { color: var(--g1); }
+
+.analyse-run-btn {
+  align-self: flex-start;
+  background: none;
+  border: 1px solid var(--g3);
+  color: var(--g5);
+  font-family: var(--font);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.analyse-run-btn:hover:not(:disabled) {
+  background: rgba(0,255,65,0.05);
+  border-color: var(--g5);
+  text-shadow: var(--glow-dim);
+  box-shadow: 0 0 12px rgba(0,255,65,0.1);
+}
+
+.analyse-run-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.spinner {
+  width: 12px; height: 12px;
+  border: 1px solid var(--g2);
+  border-top-color: var(--g5);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.result-box {
+  border: 1px solid var(--g1);
+  background: var(--g0);
+  display: none;
+}
+
+.result-box.visible { display: block; animation: fadeIn 0.2s ease; }
+
+.result-box-header {
+  font-size: 10px;
+  color: var(--g2);
+  letter-spacing: 1px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--g1);
+  display: flex;
+  justify-content: space-between;
+}
+
+.result-body {
+  padding: 12px;
+  color: var(--g4);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.result-body strong { color: var(--g5); font-weight: 700; }
+.result-body ul { list-style: none; padding: 0; }
+.result-body ul li::before { content: '  ├ '; color: var(--g2); }
+.result-body ul li:last-child::before { content: '  └ '; color: var(--g2); }
+.result-body p { margin-bottom: 8px; }
+.result-body p:last-child { margin-bottom: 0; }
+.result-body a { color: var(--cyan); text-decoration: none; }
+
+/* ── STATUS BAR ── */
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--g0);
+  border-top: 1px solid var(--g1);
+  padding: 5px 0;
+  overflow: hidden;
+}
+
+.status-item {
+  font-size: 10px;
+  color: var(--g2);
+  letter-spacing: 0.5px;
+  padding: 0 14px;
+  border-right: 1px solid var(--g1);
+  white-space: nowrap;
+}
+
+.status-item:last-child { border-right: none; }
+.status-item.hi { color: var(--g3); }
+</style>
+</head>
+<body>
+
+<!-- BOOT SCREEN -->
+<div id="boot">
+  <canvas id="boot-canvas" width="360" height="360"></canvas>
+  <div id="boot-lines"></div>
+</div>
+
+<!-- TERMINAL -->
+<div class="terminal" id="terminal">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <span class="top-bar-title">ADAM.AI &nbsp;//&nbsp; PERSONAL REPRESENTATIVE SYSTEM v1.0</span>
+    <div class="top-bar-meta">
+      <span><span class="status-dot"></span>ONLINE</span>
+      <span>MODEL: claude-sonnet-4-6</span>
+      <span>SUBJECT: A.G. BARFOD</span>
+    </div>
+  </div>
+
+  <!-- MODE BAR -->
+  <div class="mode-bar">
+    <button class="mode-btn active" data-view="chat-view">[ ASK ABOUT ADAM ]</button>
+    <button class="mode-btn" data-view="analyse-view">[ ANALYSE A ROLE ]</button>
+  </div>
+
+  <!-- SCREEN -->
+  <div class="screen">
+
+    <!-- CHAT VIEW -->
+    <div class="view active" id="chat-view">
+      <div id="messages">
+
+        <div class="sys-welcome">
+          <div class="sys-welcome-header">// SYSTEM READY — KNOWLEDGE BASE LOADED</div>
+          <div class="sys-welcome-body">
+            You are interfacing with Adam Grøfte Barfod's AI representative.<br>
+            Ask anything about his background, experience, or fit for a role.<br>
+            For direct contact:
+            <div class="sys-welcome-contacts">
+              <a class="sys-link" href="mailto:Adam0406@gmail.com">✉ Adam0406@gmail.com</a>
+              <a class="sys-link" href="tel:+4541624530">✆ +45 41 62 45 30</a>
+              <a class="sys-link" href="https://www.linkedin.com/in/adambarfod/" target="_blank">⇗ LinkedIn</a>
+            </div>
+          </div>
+        </div>
+
+        <div id="suggestions">
+          <div class="sug-label">// SUGGESTED QUERIES</div>
+          <div class="sug-grid">
+            <button class="sug-item"><span class="sug-arrow">→</span> What makes Adam different from other AI candidates?</button>
+            <button class="sug-item"><span class="sug-arrow">→</span> Tell me about his Novo Nordisk experience</button>
+            <button class="sug-item"><span class="sug-arrow">→</span> What AI projects has he built?</button>
+            <button class="sug-item"><span class="sug-arrow">→</span> What is he looking for in his next role?</button>
+            <button class="sug-item"><span class="sug-arrow">→</span> What does he actually know about AI technically?</button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="input-area">
+        <div class="input-row">
+          <span class="prompt-symbol">&gt;</span>
+          <textarea id="chat-input" placeholder="enter query..." rows="1"></textarea>
+          <button class="send-btn" id="send-btn" disabled>EXECUTE</button>
+        </div>
+        <div class="hint-line">ENTER to send &nbsp;·&nbsp; SHIFT+ENTER for new line &nbsp;·&nbsp; When in doubt, contact Adam directly</div>
+      </div>
+    </div>
+
+    <!-- ANALYSE VIEW -->
+    <div class="view" id="analyse-view">
+      <div class="analyse-header">// ROLE FIT ANALYSER</div>
+      <div class="analyse-desc">
+        Paste a job description. The system will return an honest fit assessment —<br>
+        strong matches with evidence, genuine gaps, and the angle to lead with.
+      </div>
+      <div class="jd-wrapper">
+        <div class="jd-label">// INPUT: JOB DESCRIPTION</div>
+        <textarea id="jd-input" placeholder="paste job description here..."></textarea>
+      </div>
+      <button class="analyse-run-btn" id="analyse-btn" disabled>
+        <span id="analyse-label">RUN ANALYSIS</span>
+        <div class="spinner" id="analyse-spinner"></div>
+      </button>
+      <div class="result-box" id="result-box">
+        <div class="result-box-header">
+          <span>// ANALYSIS OUTPUT</span>
+          <span id="result-timestamp"></span>
+        </div>
+        <div class="result-body" id="result-body"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-item hi">ADAM.AI v1.0</div>
+    <div class="status-item">SUBJECT: ADAM GRØFTE BARFOD</div>
+    <div class="status-item">ROLE: PROCESS &amp; INNOVATION ENGINEER</div>
+    <div class="status-item">TARGET: AI TRANSFORMATION</div>
+    <div class="status-item">CONTACT: Adam0406@gmail.com</div>
+  </div>
+
+</div>
+
+<script>
+const API = '';
+const messages = [];
+
+// ── PORTRAIT BUILD ──
+function calcBootDuration(lines) {
+  let total = 0;
+  for (const { text, speed } of lines) {
+    total += text ? text.length * speed + 80 : 120;
+  }
+  return total + 400; // matches the pause before fade
+}
+
+function buildPortrait(duration) {
+  const canvas = document.getElementById('boot-canvas');
+  const ctx = canvas.getContext('2d');
+  const SIZE = 360;
+  const BLOCK = 12;
+  const cols = SIZE / BLOCK;
+  const rows = SIZE / BLOCK;
+  const totalBlocks = cols * rows;
+  const intervalMs = duration / totalBlocks;
+
+  const img = new Image();
+  img.onload = () => {
+    const off = document.createElement('canvas');
+    off.width = SIZE; off.height = SIZE;
+    off.getContext('2d').drawImage(img, 0, 0, SIZE, SIZE);
+
+    // Shuffle blocks
+    const blocks = Array.from({ length: totalBlocks }, (_, i) => i);
+    for (let i = blocks.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [blocks[i], blocks[j]] = [blocks[j], blocks[i]];
+    }
+
+    let i = 0;
+    const timer = setInterval(() => {
+      if (i >= blocks.length) { clearInterval(timer); return; }
+      const col = blocks[i] % cols;
+      const row = Math.floor(blocks[i] / cols);
+      const x = col * BLOCK;
+      const y = row * BLOCK;
+
+      // Green flash, then resolve to real image
+      ctx.fillStyle = `hsl(120,100%,${15 + Math.random() * 25}%)`;
+      ctx.fillRect(x, y, BLOCK, BLOCK);
+      setTimeout(() => {
+        ctx.drawImage(off, x, y, BLOCK, BLOCK, x, y, BLOCK, BLOCK);
+      }, 60 + Math.random() * 60);
+
+      i++;
+    }, intervalMs);
+  };
+  img.src = '/static/adam.png';
+}
+
+// ── BOOT SEQUENCE ──
+const bootLines = [
+  { text: 'ADAM.AI REPRESENTATIVE SYSTEM', cls: 'bright', speed: 40 },
+  { text: 'Initializing knowledge base...', cls: 'dim', speed: 28 },
+  { text: '  > Profile: Adam Grøfte Barfod', cls: 'ok', speed: 22 },
+  { text: '  > Experience: Novo Nordisk — XR Development Engineer', cls: 'ok', speed: 18 },
+  { text: '  > Experience: Aety — Solutions Consultant', cls: 'ok', speed: 18 },
+  { text: '  > Projects: RECON, AI Pulse, Contract Intelligence, KYB Processor', cls: 'ok', speed: 16 },
+  { text: '  > Target roles: AI Transformation · AI Strategy · Enterprise AI', cls: 'ok', speed: 16 },
+  { text: '  > Honesty protocols: ENABLED', cls: 'ok', speed: 22 },
+  { text: '  > Contact fallback: ENABLED', cls: 'ok', speed: 22 },
+  { text: 'Loading language model: claude-sonnet-4-6', cls: 'dim', speed: 20 },
+  { text: '', cls: '', speed: 0 },
+  { text: 'SYSTEM READY.', cls: 'bright', speed: 60 },
+];
+
+const bootEl = document.getElementById('boot-lines');
+const bootContainer = document.getElementById('boot');
+const terminal = document.getElementById('terminal');
+
+function typeBootLine(lines, index, onComplete) {
+  if (index >= lines.length) { onComplete(); return; }
+
+  const { text, cls, speed } = lines[index];
+  const line = document.createElement('div');
+  line.className = 'boot-line show' + (cls ? ' ' + cls : '');
+  bootEl.appendChild(line);
+
+  if (!text) {
+    setTimeout(() => typeBootLine(lines, index + 1, onComplete), 120);
+    return;
+  }
+
+  let i = 0;
+  function tick() {
+    if (i < text.length) {
+      line.textContent = text.slice(0, ++i);
+      setTimeout(tick, speed);
+    } else {
+      setTimeout(() => typeBootLine(lines, index + 1, onComplete), 80);
+    }
+  }
+  tick();
+}
+
+buildPortrait(calcBootDuration(bootLines));
+
+typeBootLine(bootLines, 0, () => {
+  setTimeout(() => {
+    bootContainer.classList.add('fade-out');
+    setTimeout(() => {
+      bootContainer.style.display = 'none';
+      terminal.classList.add('visible');
+    }, 800);
+  }, 400);
+});
+
+// ── TAB SWITCHING ──
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.view).classList.add('active');
+  });
+});
+
+// ── CHAT ──
+const chatInput = document.getElementById('chat-input');
+const sendBtn = document.getElementById('send-btn');
+const messagesEl = document.getElementById('messages');
+const suggestionsEl = document.getElementById('suggestions');
+
+chatInput.addEventListener('input', () => {
+  sendBtn.disabled = !chatInput.value.trim();
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(chatInput.scrollHeight, 100) + 'px';
+});
+
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (!sendBtn.disabled) sendMessage();
+  }
+});
+
+sendBtn.addEventListener('click', sendMessage);
+
+document.querySelectorAll('.sug-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    chatInput.value = btn.textContent.trim().replace(/^→\s*/, '');
+    sendBtn.disabled = false;
+    sendMessage();
+  });
+});
+
+function timestamp() {
+  return new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+
+function appendMsg(role, content = '') {
+  const div = document.createElement('div');
+  div.className = 'msg';
+  const isUser = role === 'user';
+  div.innerHTML = `
+    <div class="msg-header">
+      <span class="msg-who ${role}">${isUser ? '// USER' : '// ADAM.AI'}</span>
+      <span class="msg-time">${timestamp()}</span>
+    </div>
+    <div class="msg-divider"></div>
+    <div class="msg-body ${isUser ? 'user-body' : ''}">${content}</div>`;
+  messagesEl.appendChild(div);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  return div.querySelector('.msg-body');
+}
+
+// ── TYPEWRITER ──
+class Typewriter {
+  constructor(el, scrollEl, speed = 30) {
+    this.el = el;
+    this.scrollEl = scrollEl;
+    this.speed = speed;
+    this.buffer = '';
+    this.displayed = '';
+    this.ticking = false;
+    this.streamDone = false;
+    this.onDone = null;
+  }
+
+  feed(chunk) {
+    this.buffer += chunk;
+    if (!this.ticking) this._tick();
+  }
+
+  finish() {
+    this.streamDone = true;
+  }
+
+  _tick() {
+    if (!this.buffer.length) {
+      this.ticking = false;
+      if (this.streamDone) {
+        this.el.innerHTML = renderMd(this.displayed);
+        if (this.onDone) this.onDone(this.displayed);
+      }
+      return;
+    }
+    this.ticking = true;
+    const char = this.buffer[0];
+    this.displayed += char;
+    this.buffer = this.buffer.slice(1);
+    this.el.innerHTML = renderMd(this.displayed) + '<span class="cursor"></span>';
+    if (this.scrollEl) this.scrollEl.scrollTop = this.scrollEl.scrollHeight;
+    setTimeout(() => this._tick(), this.speed);
+  }
+}
+
+async function sendMessage() {
+  const text = chatInput.value.trim();
+  if (!text) return;
+
+  suggestionsEl.style.display = 'none';
+  messages.push({ role: 'user', content: text });
+  appendMsg('user', escHtml(text));
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  sendBtn.disabled = true;
+
+  const target = appendMsg('assistant');
+  target.innerHTML = '<span class="cursor"></span>';
+
+  try {
+    const res = await fetch(`${API}/api/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages }),
+    });
+
+    if (!res.ok) throw new Error();
+
+    const tw = new Typewriter(target, messagesEl, 30);
+    tw.onDone = (full) => {
+      messages.push({ role: 'assistant', content: full });
+      sendBtn.disabled = !chatInput.value.trim();
+    };
+
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      tw.feed(dec.decode(value, { stream: true }));
+    }
+    tw.finish();
+
+  } catch {
+    target.innerHTML = '<span style="color:var(--red)">// ERROR: REQUEST FAILED. TRY AGAIN.</span>';
+    sendBtn.disabled = !chatInput.value.trim();
+  }
+}
+
+// ── ANALYSE ──
+const jdInput = document.getElementById('jd-input');
+const analyseBtn = document.getElementById('analyse-btn');
+const analyseLabel = document.getElementById('analyse-label');
+const analyseSpinner = document.getElementById('analyse-spinner');
+const resultBox = document.getElementById('result-box');
+const resultBody = document.getElementById('result-body');
+const resultTimestamp = document.getElementById('result-timestamp');
+
+jdInput.addEventListener('input', () => {
+  analyseBtn.disabled = !jdInput.value.trim();
+});
+
+analyseBtn.addEventListener('click', async () => {
+  const jd = jdInput.value.trim();
+  if (!jd) return;
+
+  analyseBtn.disabled = true;
+  analyseLabel.textContent = 'PROCESSING...';
+  analyseSpinner.style.display = 'block';
+  resultBox.classList.remove('visible');
+  resultBody.innerHTML = '';
+
+  try {
+    const res = await fetch(`${API}/api/analyse`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ job_description: jd }),
+    });
+
+    if (!res.ok) throw new Error();
+
+    resultTimestamp.textContent = timestamp();
+    resultBox.classList.add('visible');
+    resultBody.innerHTML = '<span class="cursor"></span>';
+
+    const analyseView = document.getElementById('analyse-view');
+    const tw = new Typewriter(resultBody, analyseView, 30);
+    tw.onDone = () => {
+      analyseLabel.textContent = 'RUN ANALYSIS';
+      analyseSpinner.style.display = 'none';
+      analyseBtn.disabled = false;
+    };
+
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      tw.feed(dec.decode(value, { stream: true }));
+    }
+    tw.finish();
+
+  } catch {
+    resultBox.classList.add('visible');
+    resultBody.innerHTML = '<span style="color:var(--red)">// ERROR: REQUEST FAILED. TRY AGAIN.</span>';
+    analyseLabel.textContent = 'RUN ANALYSIS';
+    analyseSpinner.style.display = 'none';
+    analyseBtn.disabled = false;
+  }
+});
+
+// ── HELPERS ──
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderMd(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+    .replace(/^#{1,3}\s+(.+)$/gm, '<strong>$1</strong>')
+    .replace(/^[-•]\s+(.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>')
+    .replace(/\n{2,}/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    .replace(/^(.)/s, '<p>$1')
+    .replace(/(.)$/s, '$1</p>');
+}
+</script>
+</body>
+</html>
