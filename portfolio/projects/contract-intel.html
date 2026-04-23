@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contract Intelligence — Adam Barfod</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #070a12; --bg-surface: #0d1220; --bg-card: #0f1625;
+      --text: #e8e3d9; --text-muted: #5c5a55; --text-dim: #9a9590;
+      --accent: #c4893a; --accent-dim: rgba(196,137,58,0.07);
+      --teal: #4dd9c0; --teal-dim: rgba(77,217,192,0.08);
+      --danger: #e05a4a;
+      --border: rgba(232,227,217,0.07); --border-accent: rgba(196,137,58,0.22);
+      --font-display: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif; --font-mono: 'Space Mono', monospace;
+      --max-w: 860px; --nav-h: 62px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; }
+    a { color: inherit; text-decoration: none; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 100; border-bottom: 1px solid var(--border); backdrop-filter: blur(24px); background: rgba(7,10,18,0.82); }
+    .nav-inner { max-width: 1180px; margin: 0 auto; padding: 0 2.5rem; height: 100%; display: flex; align-items: center; justify-content: space-between; }
+    .nav-back { display: flex; align-items: center; gap: 0.625rem; font-size: 0.8125rem; color: var(--text-dim); transition: color 0.18s; }
+    .nav-back:hover { color: var(--text); }
+    .nav-back-arrow { transition: transform 0.2s; }
+    .nav-back:hover .nav-back-arrow { transform: translateX(-4px); }
+    .nav-logo { font-family: var(--font-display); font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.05em; }
+    .nav-logo em { color: var(--accent); font-style: normal; }
+    .nav-demo { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; padding: 0.45rem 1rem; border: 1px solid var(--border-accent); color: var(--accent); transition: background 0.18s; }
+    .nav-demo:hover { background: var(--accent-dim); }
+
+    .project-hero { padding-top: calc(var(--nav-h) + 5rem); padding-bottom: 4rem; border-bottom: 1px solid var(--border); }
+    .hero-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 2.5rem; }
+    .hero-category { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+    .hero-category::before { content: '03'; color: var(--text-muted); margin-right: 0.25rem; }
+    .project-name { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.5rem, 6vw, 5rem); letter-spacing: -0.025em; line-height: 0.95; margin-bottom: 1.75rem; }
+    .project-sub { font-size: 1.1875rem; font-weight: 300; color: var(--text-dim); line-height: 1.65; max-width: 620px; margin-bottom: 2.5rem; font-style: italic; }
+    .meta-strip { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--border); }
+    .meta-item { padding: 0.75rem 1.25rem; border-right: 1px solid var(--border); flex-shrink: 0; }
+    .meta-item:last-child { border-right: none; }
+    .meta-label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.25rem; }
+    .meta-val { font-size: 0.875rem; color: var(--text); }
+    .meta-val.accent { color: var(--accent); }
+
+    .project-visual { background: var(--bg-surface); border-bottom: 1px solid var(--border); overflow: hidden; }
+    .visual-inner { max-width: var(--max-w); margin: 0 auto; padding: 3rem 2.5rem; }
+
+    .content-wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 2.5rem; }
+    .content-section { padding: 4rem 0; border-bottom: 1px solid var(--border); }
+    .content-section:last-of-type { border-bottom: none; }
+
+    .cs-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+    .cs-label::before { content: ''; display: block; width: 16px; height: 1px; background: var(--accent); }
+    .cs-title { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+    .cs-body { font-size: 1.0625rem; font-weight: 300; color: var(--text-dim); line-height: 1.8; margin-bottom: 1.25rem; }
+    .cs-body strong { color: var(--text); font-weight: 500; }
+    .cs-body:last-child { margin-bottom: 0; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 1.25rem 1.5rem; background: rgba(196,137,58,0.04); margin: 2rem 0; }
+    .callout p { font-size: 1.0625rem; font-weight: 400; color: var(--text); line-height: 1.65; }
+
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin: 1.5rem 0; }
+    .metric { background: var(--bg-surface); padding: 1.75rem 1.5rem; }
+    .metric-num { font-family: var(--font-display); font-weight: 700; font-size: 2.25rem; color: var(--accent); letter-spacing: -0.03em; line-height: 1; margin-bottom: 0.5rem; }
+    .metric-label { font-size: 0.875rem; color: var(--text-dim); line-height: 1.45; }
+
+    .arch-block { background: var(--bg-surface); border: 1px solid var(--border); padding: 1.75rem; margin: 1.75rem 0; }
+    .arch-block-title { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+    .arch-row { display: flex; align-items: flex-start; gap: 1.25rem; padding: 0.875rem 0; border-bottom: 1px solid var(--border); }
+    .arch-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .arch-layer { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); flex-shrink: 0; width: 80px; padding-top: 0.05rem; }
+    .arch-detail { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+    .arch-detail strong { color: var(--text); font-weight: 500; }
+
+    .lesson-list { display: flex; flex-direction: column; gap: 0; }
+    .lesson-item { display: flex; gap: 1.25rem; padding: 1.375rem 0; border-bottom: 1px solid var(--border); }
+    .lesson-item:first-child { border-top: 1px solid var(--border); }
+    .lesson-icon { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; margin-top: 0.1rem; }
+    .lesson-icon.warn { background: rgba(196,137,58,0.1); color: var(--accent); }
+    .lesson-icon.info { background: rgba(77,217,192,0.08); color: var(--teal); }
+    .lesson-text h4 { font-family: var(--font-display); font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.375rem; }
+    .lesson-text p { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+
+    .future-list { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+    .future-list li { display: flex; align-items: flex-start; gap: 0.875rem; padding: 0.875rem 0; border-bottom: 1px solid var(--border); font-size: 0.9375rem; color: var(--text-dim); line-height: 1.55; }
+    .future-list li::before { content: '→'; color: var(--accent); flex-shrink: 0; font-family: var(--font-mono); font-size: 0.8rem; padding-top: 0.1rem; }
+
+    .demo-cta { padding: 4rem 0; border-top: 1px solid var(--border); text-align: center; }
+    .cta-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+    .cta-heading { font-family: var(--font-display); font-weight: 700; font-size: 2rem; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+    .cta-sub { font-size: 0.9375rem; color: var(--text-dim); margin-bottom: 2.25rem; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 500; padding: 1rem 2.25rem; background: var(--accent); color: var(--bg); transition: opacity 0.18s; }
+    .cta-btn:hover { opacity: 0.88; }
+    .cta-note { display: block; margin-top: 1.25rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; }
+
+    footer { border-top: 1px solid var(--border); padding: 1.875rem 0; }
+    .footer-inner { max-width: 1180px; margin: 0 auto; padding: 0 2.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-size: 0.8rem; color: var(--text-muted); }
+    .footer-back { font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem; }
+    .footer-back:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      .content-wrap, .hero-inner, .visual-inner { padding: 0 1.375rem; }
+      .metrics { grid-template-columns: 1fr; }
+      .meta-strip { flex-direction: column; }
+      .meta-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .meta-item:last-child { border-bottom: none; }
+      .nav-inner { padding: 0 1.375rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-back"><span class="nav-back-arrow">←</span> Back to Portfolio</a>
+      <a href="../index.html" class="nav-logo">Adam <em>Barfod</em></a>
+      <a href="http://localhost:8000" target="_blank" class="nav-demo">Try Live →</a>
+    </div>
+  </nav>
+
+  <div class="project-hero">
+    <div class="hero-inner">
+      <div class="hero-category">Legal &amp; Procurement &middot; Document AI</div>
+      <h1 class="project-name">Contract Intelligence</h1>
+      <p class="project-sub">Legal and procurement teams spend hours manually reviewing contracts, missing clauses buried in boilerplate. Upload a PDF — get a risk-scored clause breakdown in minutes, not hours.</p>
+      <div class="meta-strip">
+        <div class="meta-item"><div class="meta-label">Year</div><div class="meta-val">2026</div></div>
+        <div class="meta-item"><div class="meta-label">Category</div><div class="meta-val">Legal &amp; Procurement</div></div>
+        <div class="meta-item"><div class="meta-label">AI Method</div><div class="meta-val">Two-Agent Pipeline</div></div>
+        <div class="meta-item"><div class="meta-label">Input</div><div class="meta-val accent">PDF Contract Upload</div></div>
+        <div class="meta-item"><div class="meta-label">Status</div><div class="meta-val accent">Active</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-visual">
+    <div class="visual-inner">
+      <svg width="100%" height="220" viewBox="0 0 800 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <!-- Input PDF -->
+        <rect x="30" y="75" width="80" height="70" rx="3" fill="rgba(77,217,192,0.06)" stroke="rgba(77,217,192,0.25)" stroke-width="1"/>
+        <line x1="50" y1="100" x2="90" y2="100" stroke="rgba(232,227,217,0.1)" stroke-width="1"/>
+        <line x1="50" y1="111" x2="90" y2="111" stroke="rgba(232,227,217,0.07)" stroke-width="1"/>
+        <line x1="50" y1="122" x2="80" y2="122" stroke="rgba(232,227,217,0.07)" stroke-width="1"/>
+        <text x="70" y="88" text-anchor="middle" fill="rgba(77,217,192,0.6)" font-family="Space Mono,monospace" font-size="7">PDF</text>
+        <text x="70" y="157" text-anchor="middle" fill="rgba(77,217,192,0.3)" font-family="Space Mono,monospace" font-size="6">Upload</text>
+        <!-- Arrow to extractor -->
+        <line x1="110" y1="110" x2="148" y2="110" stroke="rgba(196,137,58,0.35)" stroke-width="1.2"/>
+        <polygon points="148,106 156,110 148,114" fill="rgba(196,137,58,0.45)"/>
+        <!-- PDF Extractor -->
+        <rect x="156" y="82" width="110" height="56" rx="3" fill="rgba(196,137,58,0.07)" stroke="rgba(196,137,58,0.28)" stroke-width="1"/>
+        <text x="211" y="104" text-anchor="middle" fill="rgba(196,137,58,0.8)" font-family="Space Mono,monospace" font-size="8" letter-spacing="0.5">EXTRACTOR</text>
+        <text x="211" y="118" text-anchor="middle" fill="rgba(196,137,58,0.4)" font-family="Space Mono,monospace" font-size="6.5">pdfplumber</text>
+        <text x="211" y="129" text-anchor="middle" fill="rgba(232,227,217,0.2)" font-family="DM Sans,sans-serif" font-size="7">Raw text chunks</text>
+        <!-- Arrow to Agent 1 -->
+        <line x1="266" y1="110" x2="308" y2="110" stroke="rgba(196,137,58,0.35)" stroke-width="1.2"/>
+        <polygon points="308,106 316,110 308,114" fill="rgba(196,137,58,0.45)"/>
+        <!-- Analyst Agent -->
+        <rect x="316" y="75" width="140" height="70" rx="4" fill="rgba(196,137,58,0.09)" stroke="rgba(196,137,58,0.38)" stroke-width="1"/>
+        <text x="386" y="98" text-anchor="middle" fill="rgba(196,137,58,0.9)" font-family="Space Mono,monospace" font-size="9" letter-spacing="0.5">ANALYST</text>
+        <text x="386" y="112" text-anchor="middle" fill="rgba(196,137,58,0.5)" font-family="Space Mono,monospace" font-size="7">Extract clauses</text>
+        <text x="386" y="124" text-anchor="middle" fill="rgba(196,137,58,0.5)" font-family="Space Mono,monospace" font-size="7">Identify risk types</text>
+        <text x="386" y="136" text-anchor="middle" fill="rgba(232,227,217,0.25)" font-family="DM Sans,sans-serif" font-size="7">Structured JSON out</text>
+        <!-- Arrow to Scorer -->
+        <line x1="456" y1="110" x2="498" y2="110" stroke="rgba(196,137,58,0.35)" stroke-width="1.2"/>
+        <polygon points="498,106 506,110 498,114" fill="rgba(196,137,58,0.45)"/>
+        <!-- Scorer Agent -->
+        <rect x="506" y="75" width="140" height="70" rx="4" fill="rgba(196,137,58,0.09)" stroke="rgba(196,137,58,0.38)" stroke-width="1"/>
+        <text x="576" y="98" text-anchor="middle" fill="rgba(196,137,58,0.9)" font-family="Space Mono,monospace" font-size="9" letter-spacing="0.5">SCORER</text>
+        <text x="576" y="112" text-anchor="middle" fill="rgba(196,137,58,0.5)" font-family="Space Mono,monospace" font-size="7">Risk score 0–10</text>
+        <text x="576" y="124" text-anchor="middle" fill="rgba(196,137,58,0.5)" font-family="Space Mono,monospace" font-size="7">Severity rating</text>
+        <text x="576" y="136" text-anchor="middle" fill="rgba(232,227,217,0.25)" font-family="DM Sans,sans-serif" font-size="7">Context + recommendation</text>
+        <!-- Arrow to output -->
+        <line x1="646" y1="110" x2="688" y2="110" stroke="rgba(196,137,58,0.35)" stroke-width="1.2"/>
+        <polygon points="688,106 696,110 688,114" fill="rgba(196,137,58,0.45)"/>
+        <!-- Output -->
+        <rect x="696" y="82" width="82" height="56" rx="3" fill="rgba(77,217,192,0.05)" stroke="rgba(77,217,192,0.22)" stroke-width="1"/>
+        <text x="737" y="104" text-anchor="middle" fill="rgba(77,217,192,0.65)" font-family="Space Mono,monospace" font-size="7">RISK</text>
+        <text x="737" y="116" text-anchor="middle" fill="rgba(77,217,192,0.65)" font-family="Space Mono,monospace" font-size="7">REPORT</text>
+        <text x="737" y="128" text-anchor="middle" fill="rgba(77,217,192,0.35)" font-family="Space Mono,monospace" font-size="6">Scored output</text>
+        <!-- Timeline -->
+        <text x="400" y="175" text-anchor="middle" fill="rgba(232,227,217,0.07)" font-family="Space Mono,monospace" font-size="7" letter-spacing="3">PDF INGESTION · CLAUSE EXTRACTION · RISK SCORING · STRUCTURED OUTPUT</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="content-wrap">
+
+    <div class="content-section">
+      <div class="cs-label">The Problem</div>
+      <h2 class="cs-title">Contract review is slow, expensive, and inconsistently done.</h2>
+      <p class="cs-body">
+        Vendor contracts, partnership agreements, and procurement documents are dense, boilerplate-heavy, and designed to be difficult to parse quickly. The risk clauses — the ones that matter — are often buried in standard language that looks the same as non-risky language to a non-specialist eye.
+      </p>
+      <p class="cs-body">
+        In most organisations, contract review follows one of two patterns: send it to legal (slow and expensive), or have a non-specialist review it (faster but misses things). The result is either a bottleneck or a risk exposure. <strong>Neither option scales</strong> as a business grows its vendor count or deal volume.
+      </p>
+      <div class="callout">
+        <p>The median contract review by a non-specialist takes 45–90 minutes and misses an estimated 20–30% of notable clauses, according to consistent patterns across legal tech research. AI can close both gaps simultaneously.</p>
+      </div>
+      <p class="cs-body">
+        The goal here wasn't to replace legal counsel — it was to build a tool that enables <strong>faster first-pass review</strong>, flags what needs specialist attention, and gives non-specialists the context to understand what they're agreeing to.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">The Solution</div>
+      <h2 class="cs-title">Upload a contract. Get a risk-scored clause breakdown with context and flags.</h2>
+      <p class="cs-body">
+        Contract Intelligence accepts a PDF upload, extracts the text using pdfplumber, and runs it through a <strong>two-agent pipeline</strong>: an Analyst agent that identifies and categorises clauses by type and risk relevance, followed by a Scorer agent that assigns each flagged clause a risk score from 0–10 with a severity rating and a contextual note.
+      </p>
+      <p class="cs-body">
+        The output is a <strong>structured risk briefing</strong> rendered in the UI: overall contract risk score, a breakdown of flagged clauses by category (liability, IP, termination, payment, data, compliance), individual clause quotes with explanations, and a prioritised action list of what to review carefully or escalate to legal.
+      </p>
+      <p class="cs-body">
+        The two-agent structure was deliberate: separating extraction from scoring keeps each agent's task focused and improves output quality. The Analyst doesn't have to think about scoring; the Scorer receives clean, structured input. This mirrors how a good legal team actually works — one person reads for issues, another evaluates severity.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">Business Value</div>
+      <h2 class="cs-title">Faster review, consistent output, non-specialist access.</h2>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-num">10x</div>
+          <div class="metric-label">Faster first-pass review — from 90 minutes to under 10 for typical vendor contracts</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">100%</div>
+          <div class="metric-label">Consistent clause coverage — the same contract always produces the same review scope, unlike manual review</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">Non-specialist</div>
+          <div class="metric-label">Access — procurement and operations can do first-pass review before legal escalation, reducing specialist time</div>
+        </div>
+      </div>
+      <p class="cs-body">
+        The buyer for this tool is clear: <strong>procurement teams, operations leads, and startup legal teams</strong> who review contracts regularly but don't have the specialist bandwidth for every document. At 10 contracts per week, Contract Intelligence reclaims roughly 12 hours of review time while raising the floor on risk identification.
+      </p>
+      <p class="cs-body">
+        For enterprise deployments, the consistency value compounds: every contract reviewed by the same criteria, every risk category covered, every review producing an auditable output — not a set of handwritten notes that disappears when the reviewer moves on.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">Technical Approach</div>
+      <h2 class="cs-title">Document ingestion, structured extraction, two-stage scoring.</h2>
+      <div class="arch-block">
+        <div class="arch-block-title">Stack &amp; Architecture</div>
+        <div class="arch-row">
+          <div class="arch-layer">Backend</div>
+          <div class="arch-detail">FastAPI (Python) with a <strong>document processing layer</strong> using pdfplumber for text extraction from uploaded PDFs. The extractor handles multi-page documents and preserves section structure where possible.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Agent 1</div>
+          <div class="arch-detail"><strong>Analyst agent</strong> receives the extracted contract text and identifies notable clauses by category: liability caps, IP assignment, termination rights, payment terms, data handling, and compliance obligations. Returns structured JSON with clause quotes and preliminary flags.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Agent 2</div>
+          <div class="arch-detail"><strong>Scorer agent</strong> receives the Analyst's structured output and assigns each flagged clause a risk score (0–10), a severity category (Low/Medium/High/Critical), and a contextual explanation written for a non-lawyer. Produces the final risk briefing.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Output</div>
+          <div class="arch-detail">Structured risk report rendered in the frontend: overall score, risk summary, categorised clause breakdown, priority action list. All clause quotes are preserved verbatim from the source document.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Frontend</div>
+          <div class="arch-detail">Single-file index.html with PDF drag-and-drop upload, real-time processing status, and a structured results view with expandable clause sections and risk score visualisation.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">Lessons &amp; Pitfalls</div>
+      <h2 class="cs-title">What PDF processing taught me about the messy reality of document AI.</h2>
+      <div class="lesson-list">
+        <div class="lesson-item">
+          <div class="lesson-icon warn">!</div>
+          <div class="lesson-text">
+            <h4>Scanned PDFs are a completely different problem</h4>
+            <p>pdfplumber works well on digitally-created PDFs but produces garbage output from scanned documents — contracts photographed or printed-then-scanned require OCR, which is a separate pipeline entirely. The current system handles digital PDFs only and communicates this clearly. Adding OCR via Tesseract or a commercial service is the obvious next step but wasn't in scope for the initial build.</p>
+          </div>
+        </div>
+        <div class="lesson-item">
+          <div class="lesson-icon warn">!</div>
+          <div class="lesson-text">
+            <h4>Non-standard contract formats break extraction assumptions</h4>
+            <p>Contracts from established law firms follow relatively predictable structures. Contracts written by smaller parties or from non-English legal traditions use wildly different structures. The Analyst agent was initially tuned on standard English-law vendor contracts and performed poorly on contracts with unusual clause numbering, implicit structure, or condensed formatting. Prompt tuning helped but the problem doesn't fully go away.</p>
+          </div>
+        </div>
+        <div class="lesson-item">
+          <div class="lesson-icon info">i</div>
+          <div class="lesson-text">
+            <h4>Showing the source clause verbatim is non-negotiable for trust</h4>
+            <p>Early versions paraphrased clauses in the output. Users (even in informal testing) immediately wanted to see the original text. An AI saying "this clause is risky" means nothing without the source text — the user needs to verify that the AI understood what it was reading. Every flagged clause now quotes directly from the document. This is a general principle: for high-stakes AI output, always show your work.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">What's Next</div>
+      <h2 class="cs-title">The path from tool to enterprise workflow component.</h2>
+      <ul class="future-list">
+        <li>Multi-document comparison — compare termination clauses across a portfolio of vendor contracts to identify outliers or inconsistencies</li>
+        <li>Clause library — build a library of acceptable vs. non-acceptable clause variants that the Scorer can reference, making risk assessment org-specific rather than generic</li>
+        <li>OCR support — handle scanned contracts via Tesseract or a commercial OCR API, dramatically expanding the document types the tool can process</li>
+        <li>CLM integration — connect with contract lifecycle management systems (DocuSign, Ironclad) to trigger review automatically when new contracts arrive</li>
+        <li>Audit trail — produce a timestamped review record suitable for compliance documentation, showing what was reviewed and what was flagged</li>
+        <li>Redline suggestions — for high-risk clauses, draft alternative language the buyer could propose</li>
+      </ul>
+    </div>
+
+    <div class="demo-cta">
+      <div class="cta-label">Try it yourself</div>
+      <h2 class="cta-heading">Upload a contract and see the analysis.</h2>
+      <p class="cta-sub">Requires the backend running locally. Start with <code style="font-family:var(--font-mono);font-size:0.875em;color:var(--accent)">uvicorn app:app --reload --port 8000</code> from the backend directory.</p>
+      <a href="http://localhost:8000" target="_blank" class="cta-btn">Open Contract Intelligence →</a>
+      <span class="cta-note">Running locally on port 8000 · Hosted version coming soon</span>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-copy">© 2026 Adam Barfod</div>
+      <a href="../index.html" class="footer-back">← Back to Portfolio</a>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYB Processor — Adam Barfod</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #070a12; --bg-surface: #0d1220; --bg-card: #0f1625;
+      --text: #e8e3d9; --text-muted: #5c5a55; --text-dim: #9a9590;
+      --accent: #c4893a; --accent-dim: rgba(196,137,58,0.07);
+      --teal: #4dd9c0; --teal-dim: rgba(77,217,192,0.08);
+      --border: rgba(232,227,217,0.07); --border-accent: rgba(196,137,58,0.22);
+      --font-display: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif; --font-mono: 'Space Mono', monospace;
+      --max-w: 860px; --nav-h: 62px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; }
+    a { color: inherit; text-decoration: none; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 100; border-bottom: 1px solid var(--border); backdrop-filter: blur(24px); background: rgba(7,10,18,0.82); }
+    .nav-inner { max-width: 1180px; margin: 0 auto; padding: 0 2.5rem; height: 100%; display: flex; align-items: center; justify-content: space-between; }
+    .nav-back { display: flex; align-items: center; gap: 0.625rem; font-size: 0.8125rem; color: var(--text-dim); transition: color 0.18s; }
+    .nav-back:hover { color: var(--text); }
+    .nav-back-arrow { transition: transform 0.2s; }
+    .nav-back:hover .nav-back-arrow { transform: translateX(-4px); }
+    .nav-logo { font-family: var(--font-display); font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.05em; }
+    .nav-logo em { color: var(--accent); font-style: normal; }
+    .nav-demo { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; padding: 0.45rem 1rem; border: 1px solid var(--border-accent); color: var(--accent); opacity: 0.5; cursor: default; }
+
+    .project-hero { padding-top: calc(var(--nav-h) + 5rem); padding-bottom: 4rem; border-bottom: 1px solid var(--border); }
+    .hero-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 2.5rem; }
+    .hero-category { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+    .hero-category::before { content: '04'; color: var(--text-muted); margin-right: 0.25rem; }
+    .project-name { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.75rem, 7vw, 5.5rem); letter-spacing: -0.025em; line-height: 0.95; margin-bottom: 1.75rem; }
+    .project-sub { font-size: 1.1875rem; font-weight: 300; color: var(--text-dim); line-height: 1.65; max-width: 620px; margin-bottom: 2.5rem; font-style: italic; }
+    .meta-strip { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--border); }
+    .meta-item { padding: 0.75rem 1.25rem; border-right: 1px solid var(--border); flex-shrink: 0; }
+    .meta-item:last-child { border-right: none; }
+    .meta-label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.25rem; }
+    .meta-val { font-size: 0.875rem; color: var(--text); }
+    .meta-val.accent { color: var(--accent); }
+
+    .project-visual { background: var(--bg-surface); border-bottom: 1px solid var(--border); overflow: hidden; }
+    .visual-inner { max-width: var(--max-w); margin: 0 auto; padding: 3rem 2.5rem; }
+
+    .content-wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 2.5rem; }
+    .content-section { padding: 4rem 0; border-bottom: 1px solid var(--border); }
+    .content-section:last-of-type { border-bottom: none; }
+
+    .cs-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+    .cs-label::before { content: ''; display: block; width: 16px; height: 1px; background: var(--accent); }
+    .cs-title { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+    .cs-body { font-size: 1.0625rem; font-weight: 300; color: var(--text-dim); line-height: 1.8; margin-bottom: 1.25rem; }
+    .cs-body strong { color: var(--text); font-weight: 500; }
+    .cs-body:last-child { margin-bottom: 0; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 1.25rem 1.5rem; background: rgba(196,137,58,0.04); margin: 2rem 0; }
+    .callout p { font-size: 1.0625rem; font-weight: 400; color: var(--text); line-height: 1.65; }
+
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin: 1.5rem 0; }
+    .metric { background: var(--bg-surface); padding: 1.75rem 1.5rem; }
+    .metric-num { font-family: var(--font-display); font-weight: 700; font-size: 2.25rem; color: var(--accent); letter-spacing: -0.03em; line-height: 1; margin-bottom: 0.5rem; }
+    .metric-label { font-size: 0.875rem; color: var(--text-dim); line-height: 1.45; }
+
+    .arch-block { background: var(--bg-surface); border: 1px solid var(--border); padding: 1.75rem; margin: 1.75rem 0; }
+    .arch-block-title { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+    .arch-row { display: flex; align-items: flex-start; gap: 1.25rem; padding: 0.875rem 0; border-bottom: 1px solid var(--border); }
+    .arch-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .arch-layer { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); flex-shrink: 0; width: 80px; padding-top: 0.05rem; }
+    .arch-detail { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+    .arch-detail strong { color: var(--text); font-weight: 500; }
+
+    .lesson-list { display: flex; flex-direction: column; gap: 0; }
+    .lesson-item { display: flex; gap: 1.25rem; padding: 1.375rem 0; border-bottom: 1px solid var(--border); }
+    .lesson-item:first-child { border-top: 1px solid var(--border); }
+    .lesson-icon { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; margin-top: 0.1rem; }
+    .lesson-icon.warn { background: rgba(196,137,58,0.1); color: var(--accent); }
+    .lesson-icon.info { background: rgba(77,217,192,0.08); color: var(--teal); }
+    .lesson-text h4 { font-family: var(--font-display); font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.375rem; }
+    .lesson-text p { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+
+    .future-list { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+    .future-list li { display: flex; align-items: flex-start; gap: 0.875rem; padding: 0.875rem 0; border-bottom: 1px solid var(--border); font-size: 0.9375rem; color: var(--text-dim); line-height: 1.55; }
+    .future-list li::before { content: '→'; color: var(--accent); flex-shrink: 0; font-family: var(--font-mono); font-size: 0.8rem; padding-top: 0.1rem; }
+
+    .demo-cta { padding: 4rem 0; border-top: 1px solid var(--border); text-align: center; }
+    .cta-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+    .cta-heading { font-family: var(--font-display); font-weight: 700; font-size: 2rem; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+    .cta-sub { font-size: 0.9375rem; color: var(--text-dim); margin-bottom: 2.25rem; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 500; padding: 1rem 2.25rem; background: var(--bg-surface); color: var(--text-dim); border: 1px solid var(--border); cursor: default; }
+    .cta-note { display: block; margin-top: 1.25rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; }
+
+    footer { border-top: 1px solid var(--border); padding: 1.875rem 0; }
+    .footer-inner { max-width: 1180px; margin: 0 auto; padding: 0 2.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-size: 0.8rem; color: var(--text-muted); }
+    .footer-back { font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem; }
+    .footer-back:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      .content-wrap, .hero-inner, .visual-inner { padding: 0 1.375rem; }
+      .metrics { grid-template-columns: 1fr; }
+      .meta-strip { flex-direction: column; }
+      .meta-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .meta-item:last-child { border-bottom: none; }
+      .nav-inner { padding: 0 1.375rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-back"><span class="nav-back-arrow">←</span> Back to Portfolio</a>
+      <a href="../index.html" class="nav-logo">Adam <em>Barfod</em></a>
+      <span class="nav-demo">n8n Workflow</span>
+    </div>
+  </nav>
+
+  <div class="project-hero">
+    <div class="hero-inner">
+      <div class="hero-category">Compliance &middot; Workflow Automation</div>
+      <h1 class="project-name">KYB Processor</h1>
+      <p class="project-sub">Compliance teams run Know Your Business checks manually — a slow, inconsistent, resource-heavy process. An n8n workflow automates data collection, AI assessment, and reporting end-to-end.</p>
+      <div class="meta-strip">
+        <div class="meta-item"><div class="meta-label">Year</div><div class="meta-val">2025</div></div>
+        <div class="meta-item"><div class="meta-label">Category</div><div class="meta-val">Compliance &amp; FinTech</div></div>
+        <div class="meta-item"><div class="meta-label">AI Method</div><div class="meta-val">Workflow Automation + AI</div></div>
+        <div class="meta-item"><div class="meta-label">Platform</div><div class="meta-val accent">n8n</div></div>
+        <div class="meta-item"><div class="meta-label">Status</div><div class="meta-val accent">Active</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-visual">
+    <div class="visual-inner">
+      <svg width="100%" height="220" viewBox="0 0 800 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <!-- Step 1: Trigger -->
+        <rect x="20" y="85" width="100" height="50" rx="4" fill="rgba(77,217,192,0.07)" stroke="rgba(77,217,192,0.3)" stroke-width="1"/>
+        <text x="70" y="104" text-anchor="middle" fill="rgba(77,217,192,0.8)" font-family="Space Mono,monospace" font-size="8" letter-spacing="0.5">TRIGGER</text>
+        <text x="70" y="118" text-anchor="middle" fill="rgba(77,217,192,0.45)" font-family="Space Mono,monospace" font-size="6.5">Webhook / Form</text>
+        <text x="70" y="155" text-anchor="middle" fill="rgba(77,217,192,0.25)" font-family="Space Mono,monospace" font-size="6">Business registers</text>
+        <!-- Arrow -->
+        <line x1="120" y1="110" x2="158" y2="110" stroke="rgba(196,137,58,0.4)" stroke-width="1.5"/>
+        <polygon points="158,106 166,110 158,114" fill="rgba(196,137,58,0.5)"/>
+        <!-- Step 2: Data Fetch -->
+        <rect x="166" y="78" width="120" height="64" rx="4" fill="rgba(196,137,58,0.07)" stroke="rgba(196,137,58,0.3)" stroke-width="1"/>
+        <text x="226" y="100" text-anchor="middle" fill="rgba(196,137,58,0.85)" font-family="Space Mono,monospace" font-size="8">DATA FETCH</text>
+        <text x="226" y="113" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="6.5">Business registry</text>
+        <text x="226" y="124" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="6.5">Public records</text>
+        <text x="226" y="135" text-anchor="middle" fill="rgba(232,227,217,0.2)" font-family="DM Sans,sans-serif" font-size="7">Sanctions · PEP lists</text>
+        <!-- Arrow -->
+        <line x1="286" y1="110" x2="326" y2="110" stroke="rgba(196,137,58,0.4)" stroke-width="1.5"/>
+        <polygon points="326,106 334,110 326,114" fill="rgba(196,137,58,0.5)"/>
+        <!-- Step 3: n8n orchestration -->
+        <rect x="334" y="78" width="120" height="64" rx="4" fill="rgba(196,137,58,0.09)" stroke="rgba(196,137,58,0.38)" stroke-width="1"/>
+        <text x="394" y="100" text-anchor="middle" fill="rgba(196,137,58,0.9)" font-family="Space Mono,monospace" font-size="10" letter-spacing="1">n8n</text>
+        <text x="394" y="116" text-anchor="middle" fill="rgba(196,137,58,0.5)" font-family="Space Mono,monospace" font-size="6.5">Orchestrate flow</text>
+        <text x="394" y="127" text-anchor="middle" fill="rgba(196,137,58,0.5)" font-family="Space Mono,monospace" font-size="6.5">Transform data</text>
+        <text x="394" y="138" text-anchor="middle" fill="rgba(232,227,217,0.2)" font-family="DM Sans,sans-serif" font-size="7">Conditional routing</text>
+        <!-- Arrow -->
+        <line x1="454" y1="110" x2="494" y2="110" stroke="rgba(196,137,58,0.4)" stroke-width="1.5"/>
+        <polygon points="494,106 502,110 494,114" fill="rgba(196,137,58,0.5)"/>
+        <!-- Step 4: AI Assessment -->
+        <rect x="502" y="78" width="120" height="64" rx="4" fill="rgba(196,137,58,0.07)" stroke="rgba(196,137,58,0.28)" stroke-width="1"/>
+        <text x="562" y="100" text-anchor="middle" fill="rgba(196,137,58,0.8)" font-family="Space Mono,monospace" font-size="7.5">AI ASSESS</text>
+        <text x="562" y="114" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="6.5">Risk evaluation</text>
+        <text x="562" y="125" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="6.5">Criteria matching</text>
+        <text x="562" y="136" text-anchor="middle" fill="rgba(232,227,217,0.2)" font-family="DM Sans,sans-serif" font-size="7">KYB verdict</text>
+        <!-- Arrow -->
+        <line x1="622" y1="110" x2="662" y2="110" stroke="rgba(196,137,58,0.4)" stroke-width="1.5"/>
+        <polygon points="662,106 670,110 662,114" fill="rgba(196,137,58,0.5)"/>
+        <!-- Step 5: Output -->
+        <rect x="670" y="85" width="110" height="50" rx="4" fill="rgba(77,217,192,0.05)" stroke="rgba(77,217,192,0.22)" stroke-width="1"/>
+        <text x="725" y="103" text-anchor="middle" fill="rgba(77,217,192,0.65)" font-family="Space Mono,monospace" font-size="7.5">VERDICT</text>
+        <text x="725" y="116" text-anchor="middle" fill="rgba(77,217,192,0.45)" font-family="Space Mono,monospace" font-size="6.5">Pass / Review / Fail</text>
+        <text x="725" y="127" text-anchor="middle" fill="rgba(77,217,192,0.3)" font-family="Space Mono,monospace" font-size="6">+ Audit trail</text>
+        <!-- Bottom label -->
+        <text x="400" y="180" text-anchor="middle" fill="rgba(232,227,217,0.07)" font-family="Space Mono,monospace" font-size="7" letter-spacing="3">EVENT-DRIVEN · n8n WORKFLOW · AI API INTEGRATION · AUTOMATED COMPLIANCE</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="content-wrap">
+
+    <div class="content-section">
+      <div class="cs-label">The Problem</div>
+      <h2 class="cs-title">KYB compliance is a bottleneck in every financial services onboarding process.</h2>
+      <p class="cs-body">
+        Know Your Business (KYB) checks are a regulatory requirement for any financial services business, fintech, or platform onboarding corporate clients. The process involves gathering basic business information, verifying registration and legal structure, checking beneficial ownership, screening against sanctions and PEP lists, and evaluating overall risk.
+      </p>
+      <p class="cs-body">
+        Done manually, KYB is <strong>slow, inconsistent, and resource-intensive</strong>. Compliance analysts query registries manually, copy data between systems, apply judgment calls that vary by analyst, and produce reports in inconsistent formats. For high-volume onboarding — as experienced by any growing B2B platform — the manual approach doesn't scale.
+      </p>
+      <div class="callout">
+        <p>The regulatory requirement doesn't go away. The question is whether it's handled by humans doing repetitive data work, or by an automated system that handles the routine and escalates the exceptions.</p>
+      </div>
+      <p class="cs-body">
+        This project demonstrates how a <strong>visual workflow automation tool</strong> (n8n) combined with an AI API integration can compress the routine parts of KYB to near-zero human time, while keeping a human in the loop for edge cases and escalations.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">The Solution</div>
+      <h2 class="cs-title">An event-driven n8n workflow that handles data collection, AI assessment, and reporting automatically.</h2>
+      <p class="cs-body">
+        The KYB Processor is built as a <strong>visual workflow in n8n</strong> — a node-based automation platform that connects services and APIs without requiring a traditional codebase. The workflow is triggered by a form submission or webhook event, kicks off an automated sequence, and produces a structured KYB verdict with an audit trail.
+      </p>
+      <p class="cs-body">
+        The workflow pulls business data from available public registries and structures it into a standardised profile. It then passes this profile to an <strong>AI API integration</strong> with a prompt engineered to evaluate the business against defined KYB criteria — ownership transparency, jurisdictional risk, sanction exposure, operational legitimacy — and produce a structured verdict: Pass, Review Required, or Fail.
+      </p>
+      <p class="cs-body">
+        Each run produces a timestamped record with the data sources consulted, the AI's assessment reasoning, and the final verdict. Failed or Review-Required cases are routed to a human analyst. Passed cases are logged and the onboarding process proceeds automatically. The workflow is <strong>fully configurable</strong> — criteria, thresholds, and routing rules can be adjusted without modifying code, purely through n8n's visual interface.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">Business Value</div>
+      <h2 class="cs-title">Why this matters for any business with a compliance function.</h2>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-num">Auto</div>
+          <div class="metric-label">Routine cases handled without analyst involvement — human time reserved for exceptions only</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">Consistent</div>
+          <div class="metric-label">Every business checked against the same criteria, every time — no analyst-to-analyst variation in risk judgment</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">Auditable</div>
+          <div class="metric-label">Timestamped records with data sources and reasoning — built-in compliance documentation for every check</div>
+        </div>
+      </div>
+      <p class="cs-body">
+        This pattern — automated first-pass with AI, human review for exceptions — is the correct architecture for most compliance workflows. It treats human analyst time as the expensive, scarce resource it is, and applies it where judgment is genuinely required rather than where data lookup is just slow.
+      </p>
+      <p class="cs-body">
+        The use of n8n rather than a custom codebase is itself a design decision with business implications: <strong>non-technical compliance staff can read, adjust, and audit the workflow</strong> without involving engineering. When regulations change (and they do), the workflow can be updated visually in hours rather than weeks of development cycles.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">Technical Approach</div>
+      <h2 class="cs-title">Why n8n, and what it demonstrates about AI integration patterns.</h2>
+      <p class="cs-body">
+        This project was specifically chosen to demonstrate <strong>workflow automation as a distinct AI integration pattern</strong> — separate from writing code with an AI framework or calling the API directly. n8n represents a class of tools that are highly relevant in enterprise contexts: visual, accessible to non-engineers, and capable of connecting the full ecosystem of business tools.
+      </p>
+      <div class="arch-block">
+        <div class="arch-block-title">Stack &amp; Architecture</div>
+        <div class="arch-row">
+          <div class="arch-layer">Platform</div>
+          <div class="arch-detail"><strong>n8n</strong> — open-source node-based workflow automation. The entire workflow logic, data flow, and conditional routing is configured visually. No backend codebase required. Runs self-hosted or cloud.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Trigger</div>
+          <div class="arch-detail"><strong>Webhook node</strong> receives the form submission payload. Can be replaced by any trigger — Zapier-style form tools, CRM events, email parsing, or direct API calls from an onboarding portal.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Data</div>
+          <div class="arch-detail"><strong>HTTP Request nodes</strong> query public business registries and structured public data sources. Data transformation nodes normalise the responses into a consistent format before AI assessment.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">AI API</div>
+          <div class="arch-detail"><strong>HTTP Request node</strong> calling the AI API (Anthropic or equivalent). The prompt includes the structured business profile, the KYB evaluation criteria, and instructions to return a structured JSON verdict with reasoning.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Routing</div>
+          <div class="arch-detail"><strong>IF/Switch nodes</strong> route outcomes: Pass cases to automated logging; Review/Fail cases to a human analyst queue (email notification, Slack message, or CRM task creation). The routing logic is visually configurable.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Audit</div>
+          <div class="arch-detail">Every run writes a <strong>structured record</strong> to a database or Google Sheet: timestamp, input data, sources consulted, AI assessment, routing decision. Full audit trail without additional tooling.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">Lessons &amp; Pitfalls</div>
+      <h2 class="cs-title">What workflow automation taught me about where the real complexity lives.</h2>
+      <div class="lesson-list">
+        <div class="lesson-item">
+          <div class="lesson-icon warn">!</div>
+          <div class="lesson-text">
+            <h4>Public registry data is inconsistently available across jurisdictions</h4>
+            <p>Business registry APIs vary dramatically in quality, accessibility, and data completeness by country. UK Companies House is well-structured and free; many EU registries require paid access or manual lookup; some jurisdictions have no accessible API at all. Any production KYB system needs a strategy for jurisdictional coverage gaps — the workflow currently handles this with fallback logic that flags incomplete data rather than failing silently.</p>
+          </div>
+        </div>
+        <div class="lesson-item">
+          <div class="lesson-icon warn">!</div>
+          <div class="lesson-text">
+            <h4>AI verdict confidence needs to be surfaced, not hidden</h4>
+            <p>Initial versions returned a binary Pass/Fail verdict. This was operationally problematic: the AI's confidence varied considerably based on data quality, but the output looked identical. Adding a confidence score and a data completeness indicator — flagging cases where the AI was working with thin data — dramatically improved the utility of the Review Required category and reduced analyst frustration with false escalations.</p>
+          </div>
+        </div>
+        <div class="lesson-item">
+          <div class="lesson-icon info">i</div>
+          <div class="lesson-text">
+            <h4>The visual workflow is a compliance communication tool, not just automation</h4>
+            <p>When the workflow was shown to a compliance officer (not a developer), they could immediately understand what was happening at each step, where data came from, and where the human review points were. This transparency is an advantage of visual workflow tools in regulated contexts — the workflow itself becomes part of the audit documentation, not just a black box that produces outputs.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">What's Next</div>
+      <h2 class="cs-title">Extending this into a full regulatory workflow component.</h2>
+      <ul class="future-list">
+        <li>Full beneficial ownership mapping — traverse ownership chains to identify ultimate beneficial owners above the regulatory threshold (typically 25%)</li>
+        <li>Document verification — accept uploaded documents (articles of incorporation, certificates of good standing) and use AI to verify contents match registry data</li>
+        <li>Ongoing monitoring — re-run KYB checks on existing clients when registry data changes or a sanctions event occurs, not just at onboarding</li>
+        <li>Risk scoring dashboard — aggregate verdict data across all processed businesses to identify portfolio-level risk concentration</li>
+        <li>Multi-jurisdiction expansion — add structured handling for priority markets beyond the current coverage, with jurisdiction-specific evaluation criteria</li>
+        <li>CRM integration — write KYB results directly to Salesforce or HubSpot records, linking compliance status to the commercial relationship</li>
+      </ul>
+    </div>
+
+    <div class="demo-cta">
+      <div class="cta-label">Implementation note</div>
+      <h2 class="cta-heading">Built in n8n — viewable on request.</h2>
+      <p class="cta-sub">This workflow runs in n8n and isn't accessible via a browser URL in the same way as the other tools. A walkthrough of the workflow and a demonstration can be provided on request.</p>
+      <span class="cta-btn">n8n Workflow · Contact for Demo</span>
+      <span class="cta-note">Visual workflow tool · Available for walkthrough</span>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-copy">© 2026 Adam Barfod</div>
+      <a href="../index.html" class="footer-back">← Back to Portfolio</a>
+    </div>
+  </footer>
+
+</body>
+</html>

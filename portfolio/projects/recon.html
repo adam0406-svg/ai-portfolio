@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RECON — Adam Barfod</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #070a12;
+      --bg-surface: #0d1220;
+      --bg-card: #0f1625;
+      --text: #e8e3d9;
+      --text-muted: #5c5a55;
+      --text-dim: #9a9590;
+      --accent: #c4893a;
+      --accent-dim: rgba(196,137,58,0.07);
+      --teal: #4dd9c0;
+      --teal-dim: rgba(77,217,192,0.08);
+      --border: rgba(232,227,217,0.07);
+      --border-accent: rgba(196,137,58,0.22);
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --max-w: 860px;
+      --nav-h: 62px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAV ─────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: var(--nav-h); z-index: 100;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(24px);
+      background: rgba(7,10,18,0.82);
+    }
+
+    .nav-inner {
+      max-width: 1180px; margin: 0 auto; padding: 0 2.5rem;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .nav-back {
+      display: flex; align-items: center; gap: 0.625rem;
+      font-size: 0.8125rem; color: var(--text-dim);
+      transition: color 0.18s;
+    }
+
+    .nav-back:hover { color: var(--text); }
+    .nav-back-arrow { transition: transform 0.2s; }
+    .nav-back:hover .nav-back-arrow { transform: translateX(-4px); }
+
+    .nav-logo {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 0.9375rem; letter-spacing: 0.05em;
+    }
+
+    .nav-logo em { color: var(--accent); font-style: normal; }
+
+    .nav-demo {
+      font-family: var(--font-mono); font-size: 0.7rem;
+      letter-spacing: 0.08em; padding: 0.45rem 1rem;
+      border: 1px solid var(--border-accent); color: var(--accent);
+      transition: background 0.18s;
+    }
+
+    .nav-demo:hover { background: var(--accent-dim); }
+
+    /* ── HERO ─────────────────────────────────────── */
+    .project-hero {
+      padding-top: calc(var(--nav-h) + 5rem);
+      padding-bottom: 4rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 2.5rem; }
+
+    .hero-category {
+      font-family: var(--font-mono); font-size: 0.7rem;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+
+    .hero-category::before { content: '01'; color: var(--text-muted); margin-right: 0.25rem; }
+
+    .project-name {
+      font-family: var(--font-display); font-weight: 800;
+      font-size: clamp(3.5rem, 8vw, 6.5rem);
+      letter-spacing: -0.025em; line-height: 0.95;
+      margin-bottom: 1.75rem;
+    }
+
+    .project-sub {
+      font-size: 1.1875rem; font-weight: 300;
+      color: var(--text-dim); line-height: 1.65;
+      max-width: 620px; margin-bottom: 2.5rem;
+      font-style: italic;
+    }
+
+    .meta-strip {
+      display: flex; flex-wrap: wrap; gap: 0;
+      border: 1px solid var(--border);
+    }
+
+    .meta-item {
+      padding: 0.75rem 1.25rem;
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .meta-item:last-child { border-right: none; }
+
+    .meta-label {
+      font-family: var(--font-mono); font-size: 0.62rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 0.25rem;
+    }
+
+    .meta-val { font-size: 0.875rem; color: var(--text); }
+    .meta-val.accent { color: var(--accent); }
+
+    /* ── VISUAL ──────────────────────────────────── */
+    .project-visual {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .visual-inner {
+      max-width: var(--max-w); margin: 0 auto;
+      padding: 3rem 2.5rem;
+    }
+
+    /* ── CONTENT ─────────────────────────────────── */
+    .content-wrap {
+      max-width: var(--max-w); margin: 0 auto;
+      padding: 0 2.5rem;
+    }
+
+    .content-section { padding: 4rem 0; border-bottom: 1px solid var(--border); }
+    .content-section:last-of-type { border-bottom: none; }
+
+    .cs-label {
+      font-family: var(--font-mono); font-size: 0.68rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+
+    .cs-label::before { content: ''; display: block; width: 16px; height: 1px; background: var(--accent); }
+
+    .cs-title {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 1.75rem; letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .cs-body {
+      font-size: 1.0625rem; font-weight: 300;
+      color: var(--text-dim); line-height: 1.8;
+      margin-bottom: 1.25rem;
+    }
+
+    .cs-body strong { color: var(--text); font-weight: 500; }
+    .cs-body em { color: var(--text-dim); font-style: italic; }
+
+    .cs-body:last-child { margin-bottom: 0; }
+
+    /* Callout block */
+    .callout {
+      border-left: 2px solid var(--accent);
+      padding: 1.25rem 1.5rem;
+      background: rgba(196,137,58,0.04);
+      margin: 2rem 0;
+    }
+
+    .callout p {
+      font-size: 1.0625rem; font-weight: 400;
+      color: var(--text); line-height: 1.65;
+    }
+
+    /* Value metrics */
+    .metrics {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; background: var(--border);
+      margin: 1.5rem 0;
+    }
+
+    .metric {
+      background: var(--bg-surface);
+      padding: 1.75rem 1.5rem;
+    }
+
+    .metric-num {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 2.25rem; color: var(--accent);
+      letter-spacing: -0.03em; line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-label {
+      font-size: 0.875rem; color: var(--text-dim); line-height: 1.45;
+    }
+
+    /* Architecture block */
+    .arch-block {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 1.75rem;
+      margin: 1.75rem 0;
+    }
+
+    .arch-block-title {
+      font-family: var(--font-mono); font-size: 0.68rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 1.25rem;
+    }
+
+    .arch-row {
+      display: flex; align-items: flex-start;
+      gap: 1.25rem; padding: 0.875rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .arch-row:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .arch-layer {
+      font-family: var(--font-mono); font-size: 0.68rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent); flex-shrink: 0; width: 80px;
+      padding-top: 0.05rem;
+    }
+
+    .arch-detail { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+    .arch-detail strong { color: var(--text); font-weight: 500; }
+
+    /* Lesson items */
+    .lesson-list { display: flex; flex-direction: column; gap: 0; }
+
+    .lesson-item {
+      display: flex; gap: 1.25rem;
+      padding: 1.375rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lesson-item:first-child { border-top: 1px solid var(--border); }
+
+    .lesson-icon {
+      width: 28px; height: 28px; border-radius: 50%;
+      flex-shrink: 0; display: flex; align-items: center;
+      justify-content: center; font-size: 0.8rem;
+      margin-top: 0.1rem;
+    }
+
+    .lesson-icon.warn { background: rgba(196,137,58,0.1); color: var(--accent); }
+    .lesson-icon.info { background: rgba(77,217,192,0.08); color: var(--teal); }
+
+    .lesson-text h4 {
+      font-family: var(--font-display); font-size: 0.9375rem;
+      font-weight: 600; margin-bottom: 0.375rem;
+    }
+
+    .lesson-text p { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+
+    /* Future list */
+    .future-list { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+
+    .future-list li {
+      display: flex; align-items: flex-start; gap: 0.875rem;
+      padding: 0.875rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9375rem; color: var(--text-dim); line-height: 1.55;
+    }
+
+    .future-list li::before {
+      content: '→'; color: var(--accent); flex-shrink: 0;
+      font-family: var(--font-mono); font-size: 0.8rem;
+      padding-top: 0.1rem;
+    }
+
+    /* Demo CTA */
+    .demo-cta {
+      padding: 4rem 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .cta-label {
+      font-family: var(--font-mono); font-size: 0.68rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 1.25rem;
+    }
+
+    .cta-heading {
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 2rem; letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    .cta-sub {
+      font-size: 0.9375rem; color: var(--text-dim);
+      margin-bottom: 2.25rem;
+    }
+
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      font-size: 1rem; font-weight: 500;
+      padding: 1rem 2.25rem;
+      background: var(--accent); color: var(--bg);
+      transition: opacity 0.18s;
+    }
+
+    .cta-btn:hover { opacity: 0.88; }
+
+    .cta-note {
+      display: block; margin-top: 1.25rem;
+      font-family: var(--font-mono); font-size: 0.65rem;
+      letter-spacing: 0.08em; color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    /* ── FOOTER ──────────────────────────────────── */
+    footer { border-top: 1px solid var(--border); padding: 1.875rem 0; }
+
+    .footer-inner {
+      max-width: 1180px; margin: 0 auto; padding: 0 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .footer-copy { font-size: 0.8rem; color: var(--text-muted); }
+    .footer-back { font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem; }
+    .footer-back:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      .content-wrap, .hero-inner, .visual-inner { padding: 0 1.375rem; }
+      .metrics { grid-template-columns: 1fr; }
+      .meta-strip { flex-direction: column; }
+      .meta-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .meta-item:last-child { border-bottom: none; }
+      .nav-inner { padding: 0 1.375rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-back">
+        <span class="nav-back-arrow">←</span>
+        Back to Portfolio
+      </a>
+      <a href="../index.html" class="nav-logo">Adam <em>Barfod</em></a>
+      <a href="http://localhost:8002" target="_blank" class="nav-demo">Try Live →</a>
+    </div>
+  </nav>
+
+  <!-- PROJECT HERO -->
+  <div class="project-hero">
+    <div class="hero-inner">
+      <div class="hero-category">Sales Intelligence &middot; Agentic AI</div>
+      <h1 class="project-name">RECON</h1>
+      <p class="project-sub">Sales prep that used to take 2.5 hours, done in 90 seconds. Type a company name — four AI agents research, synthesise, and produce a full 9-slide briefing deck.</p>
+      <div class="meta-strip">
+        <div class="meta-item">
+          <div class="meta-label">Year</div>
+          <div class="meta-val">2026</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Category</div>
+          <div class="meta-val">Sales &amp; Consulting Tools</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">AI Method</div>
+          <div class="meta-val">Agentic · CrewAI</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Time Saved</div>
+          <div class="meta-val accent">~2h 28m per session</div>
+        </div>
+        <div class="meta-item">
+          <div class="meta-label">Status</div>
+          <div class="meta-val accent">Active</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISUAL -->
+  <div class="project-visual">
+    <div class="visual-inner">
+      <svg width="100%" height="280" viewBox="0 0 800 280" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <!-- Pipeline visualization -->
+        <!-- Agent 1: Researcher -->
+        <rect x="20" y="100" width="160" height="80" rx="4" fill="rgba(196,137,58,0.07)" stroke="rgba(196,137,58,0.3)" stroke-width="1"/>
+        <text x="100" y="128" text-anchor="middle" fill="rgba(196,137,58,0.9)" font-family="Space Mono,monospace" font-size="9" letter-spacing="1">RESEARCHER</text>
+        <text x="100" y="145" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="7">0 – 22s</text>
+        <text x="100" y="161" text-anchor="middle" fill="rgba(232,227,217,0.35)" font-family="DM Sans,sans-serif" font-size="8">News · People · Products</text>
+        <!-- Arrow -->
+        <line x1="180" y1="140" x2="215" y2="140" stroke="rgba(196,137,58,0.4)" stroke-width="1.5"/>
+        <polygon points="215,136 223,140 215,144" fill="rgba(196,137,58,0.5)"/>
+        <!-- Agent 2: Writer -->
+        <rect x="223" y="100" width="160" height="80" rx="4" fill="rgba(196,137,58,0.07)" stroke="rgba(196,137,58,0.3)" stroke-width="1"/>
+        <text x="303" y="128" text-anchor="middle" fill="rgba(196,137,58,0.9)" font-family="Space Mono,monospace" font-size="9" letter-spacing="1">WRITER</text>
+        <text x="303" y="145" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="7">22 – 45s</text>
+        <text x="303" y="161" text-anchor="middle" fill="rgba(232,227,217,0.35)" font-family="DM Sans,sans-serif" font-size="8">Briefing JSON structure</text>
+        <!-- Arrow -->
+        <line x1="383" y1="140" x2="418" y2="140" stroke="rgba(196,137,58,0.4)" stroke-width="1.5"/>
+        <polygon points="418,136 426,140 418,144" fill="rgba(196,137,58,0.5)"/>
+        <!-- Agent 3: Strategist -->
+        <rect x="426" y="100" width="160" height="80" rx="4" fill="rgba(196,137,58,0.07)" stroke="rgba(196,137,58,0.3)" stroke-width="1"/>
+        <text x="506" y="128" text-anchor="middle" fill="rgba(196,137,58,0.9)" font-family="Space Mono,monospace" font-size="9" letter-spacing="1">STRATEGIST</text>
+        <text x="506" y="145" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="7">45 – 75s</text>
+        <text x="506" y="161" text-anchor="middle" fill="rgba(232,227,217,0.35)" font-family="DM Sans,sans-serif" font-size="8">Pitch · Differentiators</text>
+        <!-- Arrow -->
+        <line x1="586" y1="140" x2="621" y2="140" stroke="rgba(196,137,58,0.4)" stroke-width="1.5"/>
+        <polygon points="621,136 629,140 621,144" fill="rgba(196,137,58,0.5)"/>
+        <!-- Agent 4: Devil's Advocate -->
+        <rect x="629" y="100" width="151" height="80" rx="4" fill="rgba(196,137,58,0.07)" stroke="rgba(196,137,58,0.3)" stroke-width="1"/>
+        <text x="704" y="128" text-anchor="middle" fill="rgba(196,137,58,0.9)" font-family="Space Mono,monospace" font-size="8" letter-spacing="0.5">DEVIL'S ADVOCATE</text>
+        <text x="704" y="145" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="7">75 – 90s+</text>
+        <text x="704" y="161" text-anchor="middle" fill="rgba(232,227,217,0.35)" font-family="DM Sans,sans-serif" font-size="8">Objections · Risk flags</text>
+        <!-- Input label -->
+        <text x="100" y="80" text-anchor="middle" fill="rgba(77,217,192,0.6)" font-family="Space Mono,monospace" font-size="7" letter-spacing="1">INPUT: company name</text>
+        <line x1="100" y1="85" x2="100" y2="100" stroke="rgba(77,217,192,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+        <!-- Output label -->
+        <text x="704" y="210" text-anchor="middle" fill="rgba(77,217,192,0.6)" font-family="Space Mono,monospace" font-size="7" letter-spacing="1">OUTPUT: 9-slide deck</text>
+        <line x1="704" y1="196" x2="704" y2="205" stroke="rgba(77,217,192,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+        <!-- Time bar -->
+        <rect x="20" y="230" width="760" height="6" rx="3" fill="rgba(196,137,58,0.08)"/>
+        <rect x="20" y="230" width="760" height="6" rx="3" fill="url(#timeGrad)"/>
+        <text x="20" y="250" fill="rgba(196,137,58,0.35)" font-family="Space Mono,monospace" font-size="7">0s</text>
+        <text x="395" y="250" text-anchor="middle" fill="rgba(196,137,58,0.35)" font-family="Space Mono,monospace" font-size="7">45s</text>
+        <text x="780" y="250" text-anchor="end" fill="rgba(196,137,58,0.35)" font-family="Space Mono,monospace" font-size="7">~90s</text>
+        <defs>
+          <linearGradient id="timeGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="rgba(196,137,58,0.6)"/>
+            <stop offset="100%" stop-color="rgba(196,137,58,0.2)"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content-wrap">
+
+    <!-- THE PROBLEM -->
+    <div class="content-section">
+      <div class="cs-label">The Problem</div>
+      <h2 class="cs-title">Sales reps walk into meetings underprepared. Not because they don't care — because real research takes too long.</h2>
+      <p class="cs-body">
+        A proper pre-meeting company briefing requires cross-referencing LinkedIn for key people, scanning news sources for recent developments, reading annual reports or press releases, synthesising pain points, and translating it all into a relevant pitch angle. Done properly, this takes <strong>two to three hours</strong> per prospect.
+      </p>
+      <p class="cs-body">
+        In practice, it doesn't get done. Sales reps skim. Consultants arrive with generic decks. Customer success teams go in blind. The result is meetings that feel underprepared, discovery questions that should have been answered before walking in the door, and trust that takes longer to build because the other side can tell you haven't done your homework.
+      </p>
+      <div class="callout">
+        <p>"We spend more time doing research we'll forget by the time the meeting starts than we spend in the actual meeting." — the pattern this tool is designed to eliminate.</p>
+      </div>
+      <p class="cs-body">
+        The opportunity is clear: if this research could be automated without losing quality, it would both <strong>save significant time</strong> and <strong>raise the floor for every client interaction</strong>. No more underprepared meetings. No more reading a company's homepage in the taxi.
+      </p>
+    </div>
+
+    <!-- THE SOLUTION -->
+    <div class="content-section">
+      <div class="cs-label">The Solution</div>
+      <h2 class="cs-title">Four AI agents. One company name. A complete briefing in 90 seconds.</h2>
+      <p class="cs-body">
+        RECON is a Sales Meeting Preparation tool built on a <strong>4-agent CrewAI pipeline</strong>. You type a company name (and optionally upload context about yourself or your angle), and the system runs four sequential AI agents that each handle a distinct aspect of research and synthesis.
+      </p>
+      <p class="cs-body">
+        The <strong>Researcher</strong> agent queries live web data via Tavily — news, recent announcements, key people, products, and publicly visible pain points. The <strong>Writer</strong> agent takes those raw findings and structures them into a JSON briefing format. The <strong>Strategist</strong> turns that briefing into a tailored pitch angle, differentiators, and a recommended engagement approach. The <strong>Devil's Advocate</strong> stress-tests the whole thing — surfacing likely objections, risk flags, and intel gaps you should be aware of before you walk in.
+      </p>
+      <p class="cs-body">
+        The output is a <strong>9-slide presentation deck</strong> rendered directly in the browser: company overview, recent intelligence, who you're meeting, pain points, your strategy, objections and counters, and talking points. Each slide is scroll-friendly and the deck works on any screen. The time saved counter runs in real-time while the agents work — a live comparison against the 150 minutes this would have taken manually.
+      </p>
+    </div>
+
+    <!-- BUSINESS VALUE -->
+    <div class="content-section">
+      <div class="cs-label">Business Value</div>
+      <h2 class="cs-title">The case for this in any sales or consulting organisation.</h2>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-num">~2h 28m</div>
+          <div class="metric-label">Saved per meeting prep session — manual research compressed to 90 seconds</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">100%</div>
+          <div class="metric-label">Consistent output format — every brief follows the same structure, no person-to-person quality variation</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">9 slides</div>
+          <div class="metric-label">Immediately usable briefing deck — walkable in a team standup or reviewable alone in 5 minutes</div>
+        </div>
+      </div>
+      <p class="cs-body">
+        The business case is strongest for <strong>sales teams</strong> doing high-volume outreach, <strong>consultants</strong> meeting new clients frequently, and <strong>customer success teams</strong> managing large account portfolios. At 5 meetings per week, RECON saves over 12 hours — 1.5 working days — of research time every week, per person.
+      </p>
+      <p class="cs-body">
+        Beyond raw time savings, the consistency value compounds. Every rep arrives equally prepared. Every brief surfaces objections before the meeting, not during it. Every pitch is tailored to what the AI found in that company's public footprint — not what someone remembered from a generic deck.
+      </p>
+    </div>
+
+    <!-- TECHNICAL APPROACH -->
+    <div class="content-section">
+      <div class="cs-label">Technical Approach</div>
+      <h2 class="cs-title">Why CrewAI, and how the pipeline is structured.</h2>
+      <p class="cs-body">
+        This project was specifically chosen to introduce <strong>AI framework usage</strong> and a true <strong>agentic tool-use loop</strong> — two capabilities absent from earlier projects that relied on direct API calls. CrewAI manages the multi-agent orchestration: agent roles, sequential execution, and structured output passing between agents.
+      </p>
+      <div class="arch-block">
+        <div class="arch-block-title">Stack &amp; Architecture</div>
+        <div class="arch-row">
+          <div class="arch-layer">Backend</div>
+          <div class="arch-detail">FastAPI (Python 3.12) — <strong>two endpoints</strong>: <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--teal)">POST /api/research</code> runs the full pipeline; <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--teal)">POST /api/extract-text</code> handles optional file uploads (.pdf, .docx, .txt)</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Framework</div>
+          <div class="arch-detail"><strong>CrewAI</strong> orchestrates 4 agents in sequence: Researcher → Writer → Strategist → Devil's Advocate. Each agent has defined roles, goals, and backstory; CrewAI handles the execution loop and output passing.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">AI Model</div>
+          <div class="arch-detail"><strong>Claude (Anthropic)</strong> via litellm format for CrewAI compatibility. Each agent runs the same model but with different system prompts and structured output schemas defined in task definitions.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Search</div>
+          <div class="arch-detail"><strong>Tavily API</strong> provides live web search results to the Researcher agent — recent news, company pages, executive profiles. This is the agentic tool-use component: the model calls search and decides what to investigate.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Frontend</div>
+          <div class="arch-detail">Single-file <strong>index.html</strong> — no build step, no framework. Three views: search input, live loading (with real-time time-saved counter), and the 9-slide deck. Keyboard navigation on the deck (← →).</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Parsing</div>
+          <div class="arch-detail">Custom <strong>_strip_json</strong> and <strong>_safe_parse</strong> utilities handle LLM output that may include prose or code fences around JSON. If one agent fails, it returns <code style="font-family:var(--font-mono);font-size:0.8em;color:var(--teal)">{}</code> rather than crashing the whole run — resilience by design.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LESSONS LEARNED -->
+    <div class="content-section">
+      <div class="cs-label">Lessons &amp; Pitfalls</div>
+      <h2 class="cs-title">What went wrong, and what it taught me.</h2>
+      <div class="lesson-list">
+        <div class="lesson-item">
+          <div class="lesson-icon warn">!</div>
+          <div class="lesson-text">
+            <h4>JSON parsing from LLMs is messier than expected</h4>
+            <p>Language models frequently wrap JSON output in prose or code fences, even when instructed not to. The initial implementation crashed on every non-clean response. The fix was a dedicated regex-based extractor that strips surrounding text — but the real lesson was: <em>never trust that an LLM will follow output format instructions perfectly.</em> Always parse defensively.</p>
+          </div>
+        </div>
+        <div class="lesson-item">
+          <div class="lesson-icon warn">!</div>
+          <div class="lesson-text">
+            <h4>Agent slide layouts broke when I added position: relative to the wrong elements</h4>
+            <p>The deck uses <code style="font-family:var(--font-mono);font-size:0.82em;color:var(--teal)">position: absolute</code> on slide elements to enable the horizontal slide transition. Adding <code style="font-family:var(--font-mono);font-size:0.82em;color:var(--teal)">position: relative</code> to any child class overrode this and caused slides to stack in document flow, being clipped by the deck overflow. This class of CSS conflict is subtle and time-consuming — a good reminder to understand the positioning model before layering overrides.</p>
+          </div>
+        </div>
+        <div class="lesson-item">
+          <div class="lesson-icon info">i</div>
+          <div class="lesson-text">
+            <h4>Tavily returns fewer results for lesser-known companies</h4>
+            <p>For large, well-documented companies (Novo Nordisk, Maersk, Stripe), research quality is excellent. For smaller or private companies, Tavily finds less, and the Researcher agent produces thinner output. This is a structural limitation of web-scraping approaches — public footprint determines research quality. The system handles it gracefully, but it's worth communicating as a constraint when pitching this use case.</p>
+          </div>
+        </div>
+        <div class="lesson-item">
+          <div class="lesson-icon info">i</div>
+          <div class="lesson-text">
+            <h4>The time-saved counter is disproportionately persuasive</h4>
+            <p>Adding a real-time display of "time saved vs. manual" — watching 2 hours accumulate in 90 seconds — makes the value proposition visceral in a way that a static stat cannot. This was initially added as a UI flourish but turned out to be the single most memorable element of the demo. <em>Show people the value, don't just tell them.</em></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT'S NEXT -->
+    <div class="content-section">
+      <div class="cs-label">What's Next</div>
+      <h2 class="cs-title">Roadmap for a production version.</h2>
+      <p class="cs-body" style="margin-bottom:1.75rem;">
+        The current version is a single-user local tool. A production version would need several additional layers to work in an organisational context.
+      </p>
+      <ul class="future-list">
+        <li>CRM integration — trigger RECON automatically when a prospect is added to HubSpot or Salesforce, and write the briefing back to the record</li>
+        <li>Custom research templates — allow organisations to define their own briefing structure and focus areas (e.g. financial services teams want different intel than SaaS sales teams)</li>
+        <li>Persistent company profiles — cache research for accounts the team visits repeatedly, with staleness detection that re-runs when content is older than N days</li>
+        <li>Team sharing — share briefings with a link, comment on slides, flag items for follow-up</li>
+        <li>Regenerate per slide — re-run individual agent sections without rerunning the full pipeline</li>
+        <li>PDF export — download the deck as a formatted PDF to share or print for travel</li>
+      </ul>
+    </div>
+
+    <!-- CTA -->
+    <div class="demo-cta">
+      <div class="cta-label">Try it yourself</div>
+      <h2 class="cta-heading">See it run on a real company.</h2>
+      <p class="cta-sub">Requires the backend running locally. Start it with: <code style="font-family:var(--font-mono);font-size:0.875em;color:var(--accent)">py -3.12 -m uvicorn app:app --reload --port 8002</code></p>
+      <a href="http://localhost:8002" target="_blank" class="cta-btn">Open RECON →</a>
+      <span class="cta-note">Running locally on port 8002 · Hosted version coming soon</span>
+    </div>
+
+  </div><!-- /content-wrap -->
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-copy">© 2026 Adam Barfod</div>
+      <a href="../index.html" class="footer-back">← Back to Portfolio</a>
+    </div>
+  </footer>
+
+</body>
+</html>

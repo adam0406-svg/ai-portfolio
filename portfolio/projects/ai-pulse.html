@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Pulse — Adam Barfod</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #070a12; --bg-surface: #0d1220; --bg-card: #0f1625;
+      --text: #e8e3d9; --text-muted: #5c5a55; --text-dim: #9a9590;
+      --accent: #c4893a; --accent-dim: rgba(196,137,58,0.07);
+      --teal: #4dd9c0; --teal-dim: rgba(77,217,192,0.08);
+      --border: rgba(232,227,217,0.07); --border-accent: rgba(196,137,58,0.22);
+      --font-display: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif; --font-mono: 'Space Mono', monospace;
+      --max-w: 860px; --nav-h: 62px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+    h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; }
+    a { color: inherit; text-decoration: none; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h); z-index: 100; border-bottom: 1px solid var(--border); backdrop-filter: blur(24px); background: rgba(7,10,18,0.82); }
+    .nav-inner { max-width: 1180px; margin: 0 auto; padding: 0 2.5rem; height: 100%; display: flex; align-items: center; justify-content: space-between; }
+    .nav-back { display: flex; align-items: center; gap: 0.625rem; font-size: 0.8125rem; color: var(--text-dim); transition: color 0.18s; }
+    .nav-back:hover { color: var(--text); }
+    .nav-back-arrow { transition: transform 0.2s; }
+    .nav-back:hover .nav-back-arrow { transform: translateX(-4px); }
+    .nav-logo { font-family: var(--font-display); font-weight: 700; font-size: 0.9375rem; letter-spacing: 0.05em; }
+    .nav-logo em { color: var(--accent); font-style: normal; }
+    .nav-demo { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.08em; padding: 0.45rem 1rem; border: 1px solid var(--border-accent); color: var(--accent); transition: background 0.18s; }
+    .nav-demo:hover { background: var(--accent-dim); }
+
+    .project-hero { padding-top: calc(var(--nav-h) + 5rem); padding-bottom: 4rem; border-bottom: 1px solid var(--border); }
+    .hero-inner { max-width: var(--max-w); margin: 0 auto; padding: 0 2.5rem; }
+    .hero-category { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+    .hero-category::before { content: '02'; color: var(--text-muted); margin-right: 0.25rem; }
+    .project-name { font-family: var(--font-display); font-weight: 800; font-size: clamp(3.5rem, 8vw, 6.5rem); letter-spacing: -0.025em; line-height: 0.95; margin-bottom: 1.75rem; }
+    .project-sub { font-size: 1.1875rem; font-weight: 300; color: var(--text-dim); line-height: 1.65; max-width: 620px; margin-bottom: 2.5rem; font-style: italic; }
+    .meta-strip { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--border); }
+    .meta-item { padding: 0.75rem 1.25rem; border-right: 1px solid var(--border); flex-shrink: 0; }
+    .meta-item:last-child { border-right: none; }
+    .meta-label { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.25rem; }
+    .meta-val { font-size: 0.875rem; color: var(--text); }
+    .meta-val.accent { color: var(--accent); }
+
+    .project-visual { background: var(--bg-surface); border-bottom: 1px solid var(--border); overflow: hidden; }
+    .visual-inner { max-width: var(--max-w); margin: 0 auto; padding: 3rem 2.5rem; }
+
+    .content-wrap { max-width: var(--max-w); margin: 0 auto; padding: 0 2.5rem; }
+    .content-section { padding: 4rem 0; border-bottom: 1px solid var(--border); }
+    .content-section:last-of-type { border-bottom: none; }
+
+    .cs-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
+    .cs-label::before { content: ''; display: block; width: 16px; height: 1px; background: var(--accent); }
+    .cs-title { font-family: var(--font-display); font-weight: 700; font-size: 1.75rem; letter-spacing: -0.02em; margin-bottom: 1.5rem; }
+    .cs-body { font-size: 1.0625rem; font-weight: 300; color: var(--text-dim); line-height: 1.8; margin-bottom: 1.25rem; }
+    .cs-body strong { color: var(--text); font-weight: 500; }
+    .cs-body:last-child { margin-bottom: 0; }
+
+    .callout { border-left: 2px solid var(--accent); padding: 1.25rem 1.5rem; background: rgba(196,137,58,0.04); margin: 2rem 0; }
+    .callout p { font-size: 1.0625rem; font-weight: 400; color: var(--text); line-height: 1.65; }
+
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin: 1.5rem 0; }
+    .metric { background: var(--bg-surface); padding: 1.75rem 1.5rem; }
+    .metric-num { font-family: var(--font-display); font-weight: 700; font-size: 2.25rem; color: var(--accent); letter-spacing: -0.03em; line-height: 1; margin-bottom: 0.5rem; }
+    .metric-label { font-size: 0.875rem; color: var(--text-dim); line-height: 1.45; }
+
+    .arch-block { background: var(--bg-surface); border: 1px solid var(--border); padding: 1.75rem; margin: 1.75rem 0; }
+    .arch-block-title { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+    .arch-row { display: flex; align-items: flex-start; gap: 1.25rem; padding: 0.875rem 0; border-bottom: 1px solid var(--border); }
+    .arch-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .arch-layer { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); flex-shrink: 0; width: 80px; padding-top: 0.05rem; }
+    .arch-detail { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+    .arch-detail strong { color: var(--text); font-weight: 500; }
+
+    .lesson-list { display: flex; flex-direction: column; gap: 0; }
+    .lesson-item { display: flex; gap: 1.25rem; padding: 1.375rem 0; border-bottom: 1px solid var(--border); }
+    .lesson-item:first-child { border-top: 1px solid var(--border); }
+    .lesson-icon { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; margin-top: 0.1rem; }
+    .lesson-icon.warn { background: rgba(196,137,58,0.1); color: var(--accent); }
+    .lesson-icon.info { background: rgba(77,217,192,0.08); color: var(--teal); }
+    .lesson-text h4 { font-family: var(--font-display); font-size: 0.9375rem; font-weight: 600; margin-bottom: 0.375rem; }
+    .lesson-text p { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+
+    .future-list { list-style: none; display: flex; flex-direction: column; gap: 0.1rem; }
+    .future-list li { display: flex; align-items: flex-start; gap: 0.875rem; padding: 0.875rem 0; border-bottom: 1px solid var(--border); font-size: 0.9375rem; color: var(--text-dim); line-height: 1.55; }
+    .future-list li::before { content: '→'; color: var(--accent); flex-shrink: 0; font-family: var(--font-mono); font-size: 0.8rem; padding-top: 0.1rem; }
+
+    .demo-cta { padding: 4rem 0; border-top: 1px solid var(--border); text-align: center; }
+    .cta-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1.25rem; }
+    .cta-heading { font-family: var(--font-display); font-weight: 700; font-size: 2rem; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+    .cta-sub { font-size: 0.9375rem; color: var(--text-dim); margin-bottom: 2.25rem; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 0.75rem; font-size: 1rem; font-weight: 500; padding: 1rem 2.25rem; background: var(--accent); color: var(--bg); transition: opacity 0.18s; }
+    .cta-btn:hover { opacity: 0.88; }
+    .cta-note { display: block; margin-top: 1.25rem; font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.08em; color: var(--text-muted); text-transform: uppercase; }
+
+    footer { border-top: 1px solid var(--border); padding: 1.875rem 0; }
+    .footer-inner { max-width: 1180px; margin: 0 auto; padding: 0 2.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-size: 0.8rem; color: var(--text-muted); }
+    .footer-back { font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center; gap: 0.5rem; }
+    .footer-back:hover { color: var(--text); }
+
+    @media (max-width: 640px) {
+      .content-wrap, .hero-inner, .visual-inner { padding: 0 1.375rem; }
+      .metrics { grid-template-columns: 1fr; }
+      .meta-strip { flex-direction: column; }
+      .meta-item { border-right: none; border-bottom: 1px solid var(--border); }
+      .meta-item:last-child { border-bottom: none; }
+      .nav-inner { padding: 0 1.375rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-back"><span class="nav-back-arrow">←</span> Back to Portfolio</a>
+      <a href="../index.html" class="nav-logo">Adam <em>Barfod</em></a>
+      <a href="http://localhost:8001" target="_blank" class="nav-demo">Try Live →</a>
+    </div>
+  </nav>
+
+  <div class="project-hero">
+    <div class="hero-inner">
+      <div class="hero-category">AI Intelligence &middot; Multi-Agent Pipeline</div>
+      <h1 class="project-name">AI Pulse</h1>
+      <p class="project-sub">The AI news landscape is unmanageable — too much noise, too many sources, no structure. A multi-agent pipeline that monitors, filters, and synthesises a clean structured digest, automatically.</p>
+      <div class="meta-strip">
+        <div class="meta-item"><div class="meta-label">Year</div><div class="meta-val">2026</div></div>
+        <div class="meta-item"><div class="meta-label">Category</div><div class="meta-val">Knowledge Management</div></div>
+        <div class="meta-item"><div class="meta-label">AI Method</div><div class="meta-val">Multi-Agent Pipeline</div></div>
+        <div class="meta-item"><div class="meta-label">Sources</div><div class="meta-val accent">Reddit · HN · RSS Feeds</div></div>
+        <div class="meta-item"><div class="meta-label">Status</div><div class="meta-val accent">Active</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="project-visual">
+    <div class="visual-inner">
+      <svg width="100%" height="220" viewBox="0 0 800 220" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <!-- Sources -->
+        <rect x="20" y="30" width="90" height="28" rx="3" fill="rgba(77,217,192,0.06)" stroke="rgba(77,217,192,0.25)" stroke-width="1"/>
+        <text x="65" y="45" text-anchor="middle" dominant-baseline="middle" fill="rgba(77,217,192,0.7)" font-family="Space Mono,monospace" font-size="7">Reddit</text>
+        <rect x="20" y="68" width="90" height="28" rx="3" fill="rgba(77,217,192,0.06)" stroke="rgba(77,217,192,0.25)" stroke-width="1"/>
+        <text x="65" y="83" text-anchor="middle" dominant-baseline="middle" fill="rgba(77,217,192,0.7)" font-family="Space Mono,monospace" font-size="7">Hacker News</text>
+        <rect x="20" y="106" width="90" height="28" rx="3" fill="rgba(77,217,192,0.06)" stroke="rgba(77,217,192,0.25)" stroke-width="1"/>
+        <text x="65" y="121" text-anchor="middle" dominant-baseline="middle" fill="rgba(77,217,192,0.7)" font-family="Space Mono,monospace" font-size="7">RSS Feeds</text>
+        <text x="65" y="160" text-anchor="middle" fill="rgba(77,217,192,0.3)" font-family="Space Mono,monospace" font-size="6">SOURCES</text>
+        <!-- Arrows to Curator -->
+        <line x1="110" y1="44" x2="195" y2="96" stroke="rgba(196,137,58,0.25)" stroke-width="1"/>
+        <line x1="110" y1="82" x2="195" y2="98" stroke="rgba(196,137,58,0.25)" stroke-width="1"/>
+        <line x1="110" y1="120" x2="195" y2="102" stroke="rgba(196,137,58,0.25)" stroke-width="1"/>
+        <!-- Agent 1: Curator -->
+        <rect x="195" y="68" width="130" height="58" rx="4" fill="rgba(196,137,58,0.08)" stroke="rgba(196,137,58,0.35)" stroke-width="1"/>
+        <text x="260" y="88" text-anchor="middle" fill="rgba(196,137,58,0.9)" font-family="Space Mono,monospace" font-size="9" letter-spacing="1">CURATOR</text>
+        <text x="260" y="103" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="7">Filter · Rank · Select</text>
+        <text x="260" y="116" text-anchor="middle" fill="rgba(232,227,217,0.25)" font-family="DM Sans,sans-serif" font-size="7">Parallel async fetch</text>
+        <!-- Arrow -->
+        <line x1="325" y1="97" x2="370" y2="97" stroke="rgba(196,137,58,0.4)" stroke-width="1.5"/>
+        <polygon points="370,93 378,97 370,101" fill="rgba(196,137,58,0.5)"/>
+        <!-- Agent 2: Briefer -->
+        <rect x="378" y="68" width="130" height="58" rx="4" fill="rgba(196,137,58,0.08)" stroke="rgba(196,137,58,0.35)" stroke-width="1"/>
+        <text x="443" y="88" text-anchor="middle" fill="rgba(196,137,58,0.9)" font-family="Space Mono,monospace" font-size="9" letter-spacing="1">BRIEFER</text>
+        <text x="443" y="103" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="7">Summarise · Structure</text>
+        <text x="443" y="116" text-anchor="middle" fill="rgba(232,227,217,0.25)" font-family="DM Sans,sans-serif" font-size="7">Narrative digest</text>
+        <!-- Arrow -->
+        <line x1="508" y1="97" x2="553" y2="97" stroke="rgba(196,137,58,0.4)" stroke-width="1.5"/>
+        <polygon points="553,93 561,97 553,101" fill="rgba(196,137,58,0.5)"/>
+        <!-- Agent 3: Buzzword -->
+        <rect x="561" y="68" width="130" height="58" rx="4" fill="rgba(196,137,58,0.08)" stroke="rgba(196,137,58,0.35)" stroke-width="1"/>
+        <text x="626" y="88" text-anchor="middle" fill="rgba(196,137,58,0.9)" font-family="Space Mono,monospace" font-size="8" letter-spacing="0.5">BUZZWORD</text>
+        <text x="626" y="103" text-anchor="middle" fill="rgba(196,137,58,0.45)" font-family="Space Mono,monospace" font-size="7">Detect · Flag · Rate</text>
+        <text x="626" y="116" text-anchor="middle" fill="rgba(232,227,217,0.25)" font-family="DM Sans,sans-serif" font-size="7">Hype vs. signal</text>
+        <!-- Arrow to output -->
+        <line x1="691" y1="97" x2="736" y2="97" stroke="rgba(196,137,58,0.4)" stroke-width="1.5"/>
+        <polygon points="736,93 744,97 736,101" fill="rgba(196,137,58,0.5)"/>
+        <!-- Output -->
+        <rect x="744" y="78" width="36" height="36" rx="3" fill="rgba(77,217,192,0.08)" stroke="rgba(77,217,192,0.3)" stroke-width="1"/>
+        <text x="762" y="93" text-anchor="middle" fill="rgba(77,217,192,0.7)" font-family="Space Mono,monospace" font-size="6">WEEKLY</text>
+        <text x="762" y="105" text-anchor="middle" fill="rgba(77,217,192,0.7)" font-family="Space Mono,monospace" font-size="6">DIGEST</text>
+        <!-- Label -->
+        <text x="400" y="170" text-anchor="middle" fill="rgba(232,227,217,0.07)" font-family="Space Mono,monospace" font-size="7" letter-spacing="3">MULTI-AGENT PIPELINE · PARALLEL ASYNC · ANTHROPIC API</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="content-wrap">
+
+    <div class="content-section">
+      <div class="cs-label">The Problem</div>
+      <h2 class="cs-title">AI is moving fast. Staying informed shouldn't require a part-time job.</h2>
+      <p class="cs-body">
+        The AI news cycle is overwhelming. Between Reddit threads, Hacker News discussions, research paper announcements, product launches, and industry commentary, there are <strong>hundreds of potentially relevant signals per week</strong>. Most of them are noise. A few are genuinely important. Without a system, you either consume too much and still miss what matters, or you stop trying and fall behind.
+      </p>
+      <p class="cs-body">
+        For people working in AI transformation, consulting, or product roles, staying current isn't optional — it's part of credibility. But manually curating and reading across 15+ sources, filtering for relevance, summarising, and identifying what's signal versus marketing copy takes <strong>3–5 hours per week</strong> that most people simply can't allocate.
+      </p>
+      <div class="callout">
+        <p>The problem isn't that information doesn't exist — it's that there's too much of it, poorly organised, distributed across incompatible formats, with no layer to distinguish genuine development from hype.</p>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">The Solution</div>
+      <h2 class="cs-title">Three agents. Multiple sources. One structured digest, delivered on demand.</h2>
+      <p class="cs-body">
+        AI Pulse is a <strong>multi-agent intelligence pipeline</strong> built on FastAPI and the Anthropic API. It monitors Reddit (AI-related subreddits), Hacker News, and a configurable set of RSS feeds in parallel, then runs the collected content through a three-stage agent chain: Curator, Briefer, and Buzzword Detector.
+      </p>
+      <p class="cs-body">
+        The <strong>Curator agent</strong> filters and ranks collected content for relevance, recency, and signal quality — removing noise before it reaches downstream agents. The <strong>Briefer agent</strong> synthesises the curated set into a structured narrative digest with clear categories (model releases, tooling, research, industry moves). The <strong>Buzzword agent</strong> reads the final digest and flags terms being overused or misused — tagging hype language so the reader knows what to treat critically.
+      </p>
+      <p class="cs-body">
+        The pipeline runs with <strong>parallel async fetching</strong> from multiple sources simultaneously, significantly reducing total processing time. Output is a clean, categorised weekly brief rendered in the UI — readable in under 10 minutes and usable as the basis for team briefings, newsletter content, or just staying sharp.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">Business Value</div>
+      <h2 class="cs-title">What this solves for knowledge workers in AI-adjacent roles.</h2>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-num">3–5h</div>
+          <div class="metric-label">Weekly research time reclaimed — AI monitoring condensed to a 10-minute read</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">15+</div>
+          <div class="metric-label">Sources monitored simultaneously — consolidated to a single, structured output</div>
+        </div>
+        <div class="metric">
+          <div class="metric-num">Signal ≠ Hype</div>
+          <div class="metric-label">Buzzword detection separates genuine development from marketing noise — every time</div>
+        </div>
+      </div>
+      <p class="cs-body">
+        The clearest use cases are AI consultants who need to brief clients on what's actually happening in the space, <strong>internal AI teams</strong> trying to keep a broader organisation informed, and individuals in AI-adjacent roles who need to stay current without it consuming their week. At an organisational level, this kind of tool replaces the informal, inconsistent process of "someone forwards things they happen to see" with a systematic, high-quality weekly signal.
+      </p>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">Technical Approach</div>
+      <h2 class="cs-title">Direct API integration with parallel async architecture.</h2>
+      <p class="cs-body">
+        AI Pulse demonstrates <strong>direct Anthropic API usage</strong> — no framework abstraction, raw API calls with structured prompting. This intentional choice shows understanding of the underlying model layer that frameworks sit on top of. The multi-agent structure is implemented at the application level rather than via an orchestration framework.
+      </p>
+      <div class="arch-block">
+        <div class="arch-block-title">Stack &amp; Architecture</div>
+        <div class="arch-row">
+          <div class="arch-layer">Backend</div>
+          <div class="arch-detail">FastAPI (Python) with <strong>async/await</strong> throughout — sources are fetched concurrently, not sequentially, using asyncio. Significantly faster than synchronous implementations when hitting multiple APIs.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Sources</div>
+          <div class="arch-detail">Reddit (PRAW), Hacker News API, and RSS feeds via <strong>custom source connectors</strong> in the sources/ module. Each source is independently configurable and fault-tolerant — one failing source doesn't kill the pipeline.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Agents</div>
+          <div class="arch-detail"><strong>Three agents</strong> via direct Anthropic API: Curator (filter/rank), Briefer (synthesise/structure), Buzzword (detect/flag). Each agent receives structured context and returns structured JSON. The pipeline is linear: each agent's output feeds the next.</div>
+        </div>
+        <div class="arch-row">
+          <div class="arch-layer">Output</div>
+          <div class="arch-detail">Structured JSON digest rendered in a <strong>single-file frontend</strong> (index.html). No build step. The UI parses and displays sections: top stories, category breakdown, buzzword report, and signal/noise rating per item.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">Lessons &amp; Pitfalls</div>
+      <h2 class="cs-title">What this project exposed about real-world pipeline complexity.</h2>
+      <div class="lesson-list">
+        <div class="lesson-item">
+          <div class="lesson-icon warn">!</div>
+          <div class="lesson-text">
+            <h4>Source quality variance is the hardest problem</h4>
+            <p>On a slow news week, the Curator agent receives lower-quality input and the digest reflects that — there's no way to synthesise high-quality output from thin source material. The pipeline is only as good as what it ingests on a given day. This is a fundamental constraint of real-time content aggregation, not a fixable bug.</p>
+          </div>
+        </div>
+        <div class="lesson-item">
+          <div class="lesson-icon warn">!</div>
+          <div class="lesson-text">
+            <h4>Rate limits require more defensive architecture than expected</h4>
+            <p>Reddit's API rate limits and Hacker News's response time variance caused intermittent failures during parallel fetching. The fix was per-source retry logic with exponential backoff — but the lesson was that any production pipeline hitting external APIs needs rate limit handling as a first-class concern, not an afterthought.</p>
+          </div>
+        </div>
+        <div class="lesson-item">
+          <div class="lesson-icon info">i</div>
+          <div class="lesson-text">
+            <h4>The buzzword detection agent adds surprisingly high value</h4>
+            <p>Initially added as a minor feature, the Buzzword agent turned out to be one of the most useful outputs. Knowing that "autonomous agents" appears 47 times in a week's digest with low signal correlation is more useful than the count alone. The meta-analysis layer — commenting on the information, not just synthesising it — is a pattern worth applying more broadly.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-section">
+      <div class="cs-label">What's Next</div>
+      <h2 class="cs-title">Making this useful at the team and organisational level.</h2>
+      <ul class="future-list">
+        <li>Personalisation by role — a product manager gets a different digest emphasis than a data scientist or an executive</li>
+        <li>Slack / email delivery — push the weekly digest rather than requiring a pull, with configurable cadence</li>
+        <li>Organisation-specific keyword tracking — monitor for named competitors, specific technologies, or regulatory developments relevant to a client</li>
+        <li>Historical trending — compare this week's digest against prior weeks to surface emerging vs. sustained trends</li>
+        <li>Source quality scoring — rank sources dynamically based on how often their content survives Curator filtering</li>
+      </ul>
+    </div>
+
+    <div class="demo-cta">
+      <div class="cta-label">Try it yourself</div>
+      <h2 class="cta-heading">Run a live digest.</h2>
+      <p class="cta-sub">Requires the backend running locally. Start with <code style="font-family:var(--font-mono);font-size:0.875em;color:var(--accent)">uvicorn app:app --reload --port 8001</code> from the backend directory.</p>
+      <a href="http://localhost:8001" target="_blank" class="cta-btn">Open AI Pulse →</a>
+      <span class="cta-note">Running locally on port 8001 · Hosted version coming soon</span>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-copy">© 2026 Adam Barfod</div>
+      <a href="../index.html" class="footer-back">← Back to Portfolio</a>
+    </div>
+  </footer>
+
+</body>
+</html>
